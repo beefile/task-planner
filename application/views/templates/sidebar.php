@@ -129,9 +129,9 @@
         </div>
     </div>
     <div class="nav-bottom mb-2">
-        <a href="<?= base_url('logout') ?>" class="nav-link">
-            <i class="bi bi-box-arrow-right"></i> <span></span>
-        </a>
+        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutConfirmModal">
+    <i class="bi bi-box-arrow-right"></i>
+</a>
     </div>
 </div>
 

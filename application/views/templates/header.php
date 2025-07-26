@@ -13,4 +13,52 @@
     <title>Task Planner</title>
 </head>
 <body>
+<style>
+  /* Custom Modal Header for Pink Theme */
+.modal-header.custom-modal-header {
+    background-color: #FEA4AA; /* Lighter pink, similar to your gradient middle */
+    color: #D4536C; /* Darker pink for text */
+    border-bottom: 1px solid #FEA4AA; /* Match border to background */
+}
+
+.modal-header.custom-modal-header .btn-close {
+    filter: invert(20%) sepia(80%) saturate(2400%) hue-rotate(320deg) brightness(90%) contrast(100%); /* Makes Bootstrap's close icon pink */
+}
+
+/* Logout Icon Styling */
+.logout-icon {
+    font-size: 3rem; /* Large icon */
+    color: #D4536C; /* Dark pink color for the icon */
+    display: block; /* Ensures margin-bottom works */
+}
+
+/* Custom Button Styles for Pink Theme */
+.btn-primary-pink {
+    background-color: #D4536C; /* Main dark pink */
+    border-color: #D4536C;
+    color: #F8F8F9; /* White text */
+    font-weight: bold;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-primary-pink:hover {
+    background-color: #B04257; /* Slightly darker pink on hover */
+    border-color: #B04257;
+    color: #F8F8F9;
+}
+
+.btn-secondary-pink {
+    background-color: #ffdce0; /* Lighter pink, similar to your btn-login */
+    border-color: #ffdce0;
+    color: #D4536C; /* Dark pink text */
+    font-weight: bold;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-secondary-pink:hover {
+    background-color: #f8c9cf; /* Slightly darker light pink on hover */
+    border-color: #f8c9cf;
+    color: #D4536C;
+}
+</style>
     
