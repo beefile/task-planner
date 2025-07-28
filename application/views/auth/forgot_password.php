@@ -128,7 +128,6 @@
 
   <form id="forgotPasswordForm" method="post" action="<?= base_url('auth/forgot_password') ?>" novalidate>
     <div class="form-row">
-      <!-- LEFT -->
       <div class="form-col">
         <label class="form-label" for="email">Email</label>
         <input type="email" name="email" id="email" class="form-control" required>
@@ -140,7 +139,6 @@
         <input type="text" name="security_answer" id="security_answer" class="form-control" required>
       </div>
 
-      <!-- RIGHT -->
       <div class="form-col">
         <label class="form-label" for="password">New Password</label>
         <input type="password" name="password" id="password" class="form-control" required>

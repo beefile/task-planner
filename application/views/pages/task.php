@@ -1,88 +1,83 @@
-<?php $active = 'task'; // For sidebar active state ?>
+<?php $active = 'task'; ?>
 <?php include(APPPATH . 'views/templates/sidebar.php'); ?>
 
 <style>
-/* Base Styles */
 body {
-    font-family: 'Inter', sans-serif; /* Modern, clean font */
-    background: #F0F2F5; /* Lighter, more modern background */
+    font-family: 'Inter', sans-serif;
+    background: #F0F2F5; 
     margin: 0;
     min-height: 100vh;
     color: #333;
 }
 
 .content-wrapper {
-    margin-left: 270px; /* Space for expanded sidebar */
+    margin-left: 270px; 
     padding: 30px;
     transition: margin-left 0.3s ease, padding 0.3s ease;
 }
 
-/* --- Header Section --- */
 .page-header {
     display: flex;
     justify-content: space-between;
-    align-items: center; /* This is key for vertical alignment of all children */
+    align-items: center;
     margin-bottom: 30px;
     flex-wrap: wrap;
-    gap: 15px; /* Space between title, flash message, and button */
+    gap: 15px; 
 }
 
-/* All Headings to Pink */
 h1, h2, h3, h4, h5, h6 {
-    color: #D4536C; /* Apply pink to all heading tags */
+    color: #D4536C; 
 }
 
 .page-header h1 {
-    margin: 0; /* Remove default margin for h1 in flex context */
-    font-weight: 700; /* Bolder */
+    margin: 0; 
+    font-weight: 700;
     font-size: 2.2em;
 }
 
-/* Flash Messages - Smaller and independent */
 .flash-message {
     padding: 8px 15px;
     border-radius: 8px;
-    font-size: 0.88em; /* Adjusted to be clearly smaller, but still readable */
+    font-size: 0.88em; 
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: 6px;
     box-shadow: 0 1px 5px rgba(0,0,0,0.04);
     white-space: nowrap;
-    flex-shrink: 0; /* Prevent from shrinking too much */
+    flex-shrink: 0; 
 }
 
 .flash-message.success {
-    background-color: #e6ffed; /* Softer green */
+    background-color: #e6ffed; 
     color: #28a745;
     border: 1px solid #c3e6cb;
 }
 
 .flash-message.error {
-    background-color: #ffebe6; /* Softer red */
+    background-color: #ffebe6;
     color: #dc3545;
     border: 1px solid #f5c6cb;
 }
 
-/* --- Button Styling --- */
 .btn-primary-custom {
     font-size: 1.05em;
     padding: 12px 28px;
     border-radius: 12px;
     border: none;
-    background-color: #D4536C; /* Primary button color */
+    background-color: #D4536C; 
     color: #FFFFFF;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 6px 20px rgba(212,83,108,0.2); /* Enhanced shadow */
+    box-shadow: 0 6px 20px rgba(212,83,108,0.2); 
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
 .btn-primary-custom:hover {
-    background-color: #C04A62; /* Slightly darker on hover */
+    background-color: #C04A62; 
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(212,83,108,0.3);
 }
@@ -105,11 +100,10 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 6px 20px rgba(0,0,0,0.12);
 }
 
-/* Action Buttons (Table) */
 .action-buttons button {
     background: none;
     border: none;
-    color: #666; /* Softer action icon color */
+    color: #666; 
     font-size: 1.15em;
     cursor: pointer;
     margin-right: 8px;
@@ -119,22 +113,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .action-buttons button:hover {
-    color: #D4536C; /* Highlight on hover */
+    color: #D4536C;
     transform: translateY(-1px);
 }
 
-/* --- Task Form Container --- */
+
 #taskFormContainer {
-    display: none; /* Hidden by default */
-    margin-top: 25px; /* Existing margin, good for spacing from header */
+    display: none; 
+    margin-top: 25px; 
     border-radius: 20px;
     background: #FFFFFF;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    padding: 30px 40px; /* More generous padding */
+    padding: 30px 40px;
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
-    animation: fadeIn 0.4s ease-out; /* Fade-in animation */
+    animation: fadeIn 0.4s ease-out; 
 }
 
 @keyframes fadeIn {
@@ -143,7 +137,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #taskFormContainer .modal-title {
-    color: #D4536C; /* Ensure form title is pink */
+    color: #D4536C;
     font-size: 2em;
     margin-bottom: 25px;
     font-weight: 700;
@@ -153,17 +147,17 @@ h1, h2, h3, h4, h5, h6 {
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px; /* Slightly reduced gap for a more compact form */
+    gap: 20px; 
 }
 
 .form-group {
-    margin-bottom: 0; /* Remove default margin as gap handles it */
+    margin-bottom: 0; 
 }
 
 #taskFormContainer label {
     color: #555;
     font-weight: 600;
-    margin-bottom: 6px; /* Reduced margin */
+    margin-bottom: 6px; 
     display: block;
     font-size: 0.95em;
 }
@@ -174,13 +168,13 @@ h1, h2, h3, h4, h5, h6 {
 #taskFormContainer select,
 #taskFormContainer textarea {
     width: 100%;
-    padding: 0.85rem; /* Slightly less padding for a more compact feel */
-    border-radius: 10px; /* Slightly less rounded */
+    padding: 0.85rem; 
+    border-radius: 10px;
     border: 1px solid #e0e0e0;
     font-size: 1rem;
     background: #fff;
     transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none; /* Remove default styling for select/date/time */
+    -webkit-appearance: none; 
     -moz-appearance: none;
     appearance: none;
 }
@@ -189,26 +183,25 @@ h1, h2, h3, h4, h5, h6 {
 #taskFormContainer textarea:focus,
 #taskFormContainer select:focus {
     border-color: #D4536C;
-    box-shadow: 0 0 0 3px rgba(212, 83, 108, 0.15); /* More prominent focus glow */
+    box-shadow: 0 0 0 3px rgba(212, 83, 108, 0.15); 
     outline: none;
 }
 
 .form-full {
-    grid-column: 1 / -1; /* Spans full width in grid */
+    grid-column: 1 / -1; 
 }
 
-/* Checklist Styling */
 .checklist-item {
     display: flex;
     align-items: center;
-    margin-bottom: 8px; /* Reduced margin */
-    gap: 8px; /* Reduced gap */
+    margin-bottom: 8px; 
+    gap: 8px; 
 }
 
 .checklist-item input[type="text"] {
     flex-grow: 1;
     margin-top: 0;
-    padding: 0.75rem; /* Even smaller padding for checklist inputs */
+    padding: 0.75rem; 
 }
 
 .checklist-item .remove-checklist-item {
@@ -220,7 +213,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 5px;
     opacity: 0.7;
     transition: opacity 0.2s, transform 0.2s;
-    line-height: 1; /* Align 'x' properly */
+    line-height: 1; 
 }
 
 .checklist-item .remove-checklist-item:hover {
@@ -229,7 +222,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .checklist-add-btn {
-    background-color: #ffe6f0; /* Light pink for add button */
+    background-color: #ffe6f0; 
     color: #D4536C;
     border: 1px solid #fbc9dd;
     border-radius: 8px;
@@ -245,10 +238,8 @@ h1, h2, h3, h4, h5, h6 {
     color: #B03E55;
 }
 
-
-/* --- Task Table --- */
-.task-list-section { /* Added this class to your div wrapping the table */
-    margin-top: 30px; /* Add space between form and table/no tasks message */
+.task-list-section { 
+    margin-top: 30px; 
 }
 
 .task-table {
@@ -262,36 +253,35 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .task-table th, .task-table td {
-    padding: 15px 20px; /* Slightly reduced padding */
+    padding: 15px 20px; 
     text-align: left;
     border-bottom: 1px solid #f0f0f0;
     font-size: 0.95em;
-    vertical-align: middle; /* Center content vertically */
+    vertical-align: middle;
 }
 
-/* Checkbox Column for Table */
 .task-table th:first-child,
 .task-table td:first-child {
-    width: 40px; /* Fixed width for checkbox column */
+    width: 40px; 
     padding-left: 15px;
     padding-right: 0;
 }
 
-.task-table td:nth-child(2) { /* Title column */
-    padding-left: 10px; /* Adjust padding next to checkbox */
+.task-table td:nth-child(2) { 
+    padding-left: 10px; 
 }
 
 .task-table .task-completion-checkbox {
-    transform: scale(1.2); /* Make checkbox slightly larger */
+    transform: scale(1.2);
     cursor: pointer;
-    accent-color: #D4536C; /* Pink accent for checkbox */
-    margin: 0; /* Remove default margin */
-    border-radius: 70%; /* Slightly rounded for a modern look */
+    accent-color: #D4536C; 
+    margin: 0;
+    border-radius: 70%; 
 }
 
 .task-table thead {
-    background: #F8F9FA; /* Neutral header background */
-    color: #666; /* Softer header text */
+    background: #F8F9FA;
+    color: #666; 
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.9em;
@@ -303,13 +293,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .task-table tbody tr:hover {
-    background-color: #fcfdff; /* Very subtle hover effect */
+    background-color: #fcfdff; 
 }
 
-/* Status Badges */
 .status-badge {
     padding: 6px 14px;
-    border-radius: 20px; /* Pill-shaped */
+    border-radius: 20px; 
     font-size: 0.8em;
     font-weight: 600;
     text-transform: uppercase;
@@ -319,11 +308,10 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.status-badge.pending { background-color: #fff3e0; color: #ff9800; } /* Orange */
-.status-badge.in-progress { background-color: #e3f2fd; color: #2196f3; } /* Blue */
-.status-badge.completed { background-color: #e8f5e9; color: #4caf50; } /* Green */
+.status-badge.pending { background-color: #fff3e0; color: #ff9800; } 
+.status-badge.in-progress { background-color: #e3f2fd; color: #2196f3; }
+.status-badge.completed { background-color: #e8f5e9; color: #4caf50; }
 
-/* Category Badges - More Diverse Pink/Purple Shades */
 .category-badge {
     padding: 6px 14px;
     border-radius: 20px;
@@ -334,20 +322,17 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* Custom Shades for Specific Category IDs */
-.category-badge-1 { background-color: #ffe6f0; color: #D4536C; } /* Light Pink (e.g., Work) */
-.category-badge-2 { background-color: #fce4ec; color: #e91e63; } /* Medium Pink (e.g., Personal) */
-.category-badge-3 { background-color: #f8bbd0; color: #c2185b; } /* Stronger Pink (e.g., Important) */
-.category-badge-4 { background-color: #f06292; color: #ffffff; } /* Deep Pink (e.g., Shopping) */
-.category-badge-5 { background-color: #e04070; color: #ffffff; } /* Vibrant Pink (e.g., Health) */
-.category-badge-6 { background-color: #c51162; color: #ffffff; } /* Darker Pink (e.g., Finance) */
-.category-badge-7 { background-color: #880e4f; color: #ffffff; } /* Deep Magenta (e.g., Study) */
-/* Add more .category-badge-ID rules here for each of your categories! */
+.category-badge-1 { background-color: #ffe6f0; color: #D4536C; } 
+.category-badge-2 { background-color: #fce4ec; color: #e91e63; } 
+.category-badge-3 { background-color: #f8bbd0; color: #c2185b; } 
+.category-badge-4 { background-color: #f06292; color: #ffffff; }
+.category-badge-5 { background-color: #e04070; color: #ffffff; } 
+.category-badge-6 { background-color: #c51162; color: #ffffff; }
+.category-badge-7 { background-color: #880e4f; color: #ffffff; } 
 
 
-/* No Tasks Message */
 .no-tasks-message {
-    margin-top: 40px; /* Increased margin for better separation */
+    margin-top: 40px; 
     color: #888;
     text-align: center;
     font-size: 1.1em;
@@ -357,7 +342,6 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* --- Modal Styling (for View Details & Delete Confirmation) --- */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -365,7 +349,7 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Slightly lighter overlay */
+    background-color: rgba(0, 0, 0, 0.5); 
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -383,7 +367,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 20px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
     width: 90%;
-    max-width: 650px; /* Slightly wider modal */
+    max-width: 650px; 
     position: relative;
     transform: translateY(20px);
     opacity: 0;
@@ -401,8 +385,8 @@ h1, h2, h3, h4, h5, h6 {
     right: 15px;
     background: none;
     border: none;
-    font-size: 2em; /* Larger close button */
-    color: #AAA; /* Softer color */
+    font-size: 2em; 
+    color: #AAA;
     cursor: pointer;
     transition: color 0.2s, transform 0.2s;
 }
@@ -413,24 +397,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-title {
-    color: #D4536C; /* Ensure modal title is pink */
+    color: #D4536C;
     font-size: 2em;
     margin-bottom: 20px;
     font-weight: 700;
-    border-bottom: 1px solid #eee; /* Subtle separator */
+    border-bottom: 1px solid #eee; 
     padding-bottom: 15px;
 }
 
 .modal-body p {
-    margin-bottom: 10px; /* Reduced margin */
+    margin-bottom: 10px;
     color: #555;
-    font-size: 1em; /* Slightly smaller font */
+    font-size: 1em;
     line-height: 1.5;
 }
 
 .modal-body strong {
     color: #333;
-    min-width: 120px; /* Align labels */
+    min-width: 120px;
     display: inline-block;
 }
 
@@ -443,10 +427,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-body ul li {
-    background: #fdfdfd; /* Very light background for items */
-    padding: 8px 12px; /* Reduced padding */
+    background: #fdfdfd;
+    padding: 8px 12px; 
     border-radius: 10px;
-    margin-bottom: 6px; /* Reduced margin */
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
     box-shadow: 0 1px 4px rgba(0,0,0,0.03);
@@ -455,13 +439,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-body ul li input[type="checkbox"] {
-    margin-right: 10px; /* Reduced margin */
-    transform: scale(1.1); /* Slightly smaller checkbox in modal */
-    accent-color: #D4536C; /* Custom checkbox color */
+    margin-right: 10px; 
+    transform: scale(1.1); 
+    accent-color: #D4536C;
 }
 
-
-/* --- Responsive Adjustments --- */
 @media (max-width: 992px) {
     .content-wrapper {
         margin-left: 0;
@@ -483,15 +465,15 @@ h1, h2, h3, h4, h5, h6 {
         width: 100%;
         text-align: center;
         justify-content: center;
-        font-size: 0.8em; /* Even smaller on mobile */
+        font-size: 0.8em; 
         padding: 6px 10px;
-        order: 3; /* Pushes it to the bottom if it wraps */
+        order: 3; 
     }
     .form-grid {
         grid-template-columns: 1fr;
     }
     .task-table th, .task-table td {
-        padding: 10px 15px; /* Reduced padding */
+        padding: 10px 15px; 
         font-size: 0.9em;
     }
     .task-table thead {
@@ -507,32 +489,31 @@ h1, h2, h3, h4, h5, h6 {
         border-radius: 15px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         background: #fff;
-        padding: 15px; /* Add padding to the card itself */
+        padding: 15px;
     }
     .task-table td {
         text-align: right;
-        padding-left: 45%; /* Adjust for data-label */
+        padding-left: 45%;
         position: relative;
-        border-bottom: 1px dashed #f0f0f0; /* Dashed border for readability */
+        border-bottom: 1px dashed #f0f0f0; 
     }
     .task-table td:last-child {
         border-bottom: none;
-        padding-bottom: 0; /* Remove extra padding for last cell */
+        padding-bottom: 0; 
     }
-    /* Specific adjustments for checkbox column on mobile */
     .task-table td:first-child {
         text-align: left;
         padding-right: 15px;
-        padding-left: 15px; /* Ensure padding on left for checkbox */
+        padding-left: 15px; 
     }
     .task-table td:first-child::before {
-        display: none; /* Hide data-label for checkbox column */
+        display: none; 
     }
     .task-table td::before {
         content: attr(data-label);
         position: absolute;
         left: 15px;
-        width: calc(45% - 20px); /* Adjust width */
+        width: calc(45% - 20px); 
         white-space: nowrap;
         text-align: left;
         font-weight: bold;
@@ -540,7 +521,7 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 0.9em;
     }
     .action-buttons {
-        text-align: center; /* Center action buttons on mobile cards */
+        text-align: center;
         margin-top: 15px;
         padding-top: 10px;
         border-top: 1px dashed #f0f0f0;
@@ -662,7 +643,6 @@ h1, h2, h3, h4, h5, h6 {
                 $categoryMap[$cat->id] = $cat->category;
             }
         } else {
-            // Fallback for default categories if $categories is not set
             $categoryMap = [
                 1 => 'Work',
                 2 => 'Personal',
@@ -688,7 +668,6 @@ h1, h2, h3, h4, h5, h6 {
                         <?php if (!empty($tasks)): ?>
                             <?php foreach ($tasks as $task):
                                 $category_id = $task->category_id;
-                                // Use a generic class and specific ID-based class
                                 $categoryClass = 'category-badge-' . htmlspecialchars($category_id);
                             ?>
                                 <tr>
@@ -1006,10 +985,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.status === 'success') {
                     console.log('Task status updated successfully to:', newStatus);
-                    // No need to reload or change UI, as it's already optimistically updated
                 } else {
                     console.error('Failed to update task status:', data.message);
-                    // Revert UI on failure
                     this.checked = !this.checked; 
                     if (statusBadge) {
                         const originalStatus = newStatus === 'completed' ? 'pending' : 'completed';

@@ -88,31 +88,26 @@
     opacity: 1;
     height: auto;
   }
-/* Update this existing rule or add it if not present */
-.form-text a {
-    font-size: 0.9rem;
-    color: #D4536C; /* Your current pink, we'll override this with the new class */
-    text-decoration: none !important; /* This is key: force no underline */
-    font-weight: normal; /* Ensure it's not accidentally bolded from somewhere else */
-}
+    .form-text a {
+        font-size: 0.9rem;
+        color: #D4536C;
+        text-decoration: none !important; 
+        font-weight: normal; 
+    }
+    .form-text a:hover {
+        text-decoration: none !important; 
+    }
 
-/* Update the hover rule for the original .form-text a */
-.form-text a:hover {
-    text-decoration: none !important; /* Crucial for hover state too */
-}
+    .btn-signin-dark-pink {
+        color: #C2185B !important; 
+        font-weight: bold !important;
+        text-decoration: none !important;
+    }
 
-/* This new rule targets your Sign In link specifically */
-.btn-signin-dark-pink {
-    color: #C2185B !important; /* Darker pink, forced */
-    font-weight: bold !important; /* Make it bold, forced */
-    text-decoration: none !important; /* Redundant but good for double-checking */
-}
-
-/* Optional: Make it slightly darker/different on hover for interaction feedback */
-.btn-signin-dark-pink:hover {
-    color: #9C144A !important; /* Even darker pink on hover, forced */
-    text-decoration: none !important; /* Ensure no underline appears on hover */
-}
+    .btn-signin-dark-pink:hover {
+        color: #9C144A !important;
+        text-decoration: none !important;
+    }
 </style>
 
 <div class="login-card">
@@ -302,8 +297,6 @@
             showError(emailInput, emailError, 'Please enter a valid email address (e.g., example@domain.com).');
             hasError = true;
         }
-        // Note: Email existence check is handled on 'blur' for a better UX,
-        // but if it returned an error, 'hasError' should already be true from a previous check.
 
         // Password
         const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$/;
@@ -336,7 +329,7 @@
             hasError = true;
         }
 
-        // --- 4. Prevent submission if any error was found ---
+        // ---Prevent submission if any error was found ---
         if (hasError) {
             e.preventDefault(); // STOP the form from submitting
         }

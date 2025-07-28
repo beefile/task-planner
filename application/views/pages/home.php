@@ -1,4 +1,4 @@
-<?php $active = 'home'; // or 'task', 'progress', etc. ?>
+<?php $active = 'home'; ?>
 <?php include(APPPATH . 'views/templates/sidebar.php'); ?>
 
 <style>
@@ -123,7 +123,6 @@
         border-bottom: none;
     }
 
-    /* Custom Checkbox Container */
     .task-checkbox-container { 
         position: relative;
         margin-right: 1rem;
@@ -176,26 +175,24 @@
         transform: rotate(45deg);
     }
 
-    /* Clickable Task Link Area */
     .task-link-area {
-        flex-grow: 1; /* Takes up remaining space */
-        text-decoration: none; /* Remove default underline */
-        color: inherit; /* Inherit text color from parent */
-        display: block; /* Make it block level to take full width */
+        flex-grow: 1; 
+        text-decoration: none;
+        color: inherit; 
+        display: block;
         cursor: pointer;
         transition: color 0.2s;
     }
 
     .task-link-area:hover .task-details h6 {
-        color: #D4536C; /* Highlight task title on hover */
+        color: #D4536C;
     }
 
-    /* Task Details styling (inside task-link-area) */
     .task-details {
         flex-grow: 1;
     }
 
-    .task-item.completed .task-details h6 { /* Style based on parent .task-item.completed class */
+    .task-item.completed .task-details h6 { 
         text-decoration: line-through;
         color: #aaa;
     }
@@ -205,7 +202,7 @@
         font-size: 1rem;
         color: #333;
         font-weight: 500;
-        transition: color 0.2s, text-decoration 0.2s; /* Smooth transition for completion */
+        transition: color 0.2s, text-decoration 0.2s;
     }
 
     .task-details p {
@@ -222,17 +219,15 @@
         font-weight: 600;
         color: #fff;
     }
-    .category-important { background-color: #D4536C; } /* Primary color */
-    .category-work { background-color: #6C63FF; } /* A bluish purple */
-    .category-personal { background-color: #28A745; } /* Green */
-    .category-n-a { background-color: #999; } /* Fallback for 'Not Applicable' */
+    .category-important { background-color: #D4536C; } 
+    .category-work { background-color: #6C63FF; } 
+    .category-personal { background-color: #28A745; } 
+    .category-n-a { background-color: #999; }
 
-
-    /* Create Task Button */
     .create-task-btn {
         background-color: #D4536C;
         color: #fff;
-        border-radius: 1rem; /* More rounded */
+        border-radius: 1rem; 
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         font-size: 1rem;
@@ -241,24 +236,23 @@
         justify-content: center;
         gap: 0.5rem;
         transition: background-color 0.2s;
-        text-decoration: none; /* Remove underline */
-        width: 100%; /* Full width */
+        text-decoration: none; 
+        width: 100%;
         margin-top: 1.5rem;
         cursor: pointer;
     }
 
     .create-task-btn:hover {
-        background-color: #FEA4AA; /* Lighter hover */
+        background-color: #FEA4AA; 
         color: #D4536C;
     }
 
-    /* New Task Input Form */
     .new-task-form {
         margin-top: 1rem;
-        display: none; /* Hidden by default */
+        display: none;
         padding: 1rem;
         border-radius: 1rem;
-        background-color: #f8f8f9; /* Lighter background for the form */
+        background-color: #f8f8f9;
         box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
     }
 
@@ -285,12 +279,12 @@
         border-radius: 0.75rem;
         font-size: 0.95rem;
         background-color: #fff;
-        -webkit-appearance: none; /* Remove default arrow for select */
+        -webkit-appearance: none; 
         -moz-appearance: none;
         appearance: none;
     }
     .new-task-form select {
-        padding-right: 2.5rem; /* Space for custom arrow */
+        padding-right: 2.5rem;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23777777' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 1rem center;
@@ -309,7 +303,7 @@
         padding: 0.5rem 1rem;
         border-radius: 0.75rem;
         font-weight: 500;
-        border: 1px solid #ddd; /* Default border for all buttons */
+        border: 1px solid #ddd; 
         transition: background-color 0.2s, color 0.2s, border-color 0.2s;
     }
 
@@ -332,21 +326,20 @@
         border-color: #FEA4AA;
     }
 
-    /* Task Summary Boxes - Now side-by-side */
     .task-summary-boxes {
         display: flex;
-        gap: 1.5rem; /* Space between the boxes */
+        gap: 1.5rem; 
         margin-bottom: 2rem;
-        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        flex-wrap: wrap; 
     }
 
     .task-summary-box {
-        flex: 1; /* Allow boxes to grow and shrink */
-        min-width: 150px; /* Minimum width to prevent crushing */
-        background-color: #D4536C; /* Theme color background */
+        flex: 1; 
+        min-width: 150px;
+        background-color: #D4536C;
         color: #fff;
         text-align: center;
-        padding: 1.2rem 1rem; /* Slightly reduced padding */
+        padding: 1.2rem 1rem;
         border-radius: 1.5rem;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         display: flex;
@@ -356,8 +349,8 @@
         min-height: 120px;
     }
     .task-summary-box.overall-tasks {
-        background-color: #FEA4AA; /* Lighter theme color for overall tasks */
-        color: #D4536C; /* Darker text for contrast */
+        background-color: #FEA4AA;
+        color: #D4536C;
     }
     .task-summary-box h3 {
         font-size: 2.5rem;
@@ -371,50 +364,47 @@
         margin-bottom: 0;
         font-weight: 500;
     }
-
-    /* Welcome message / "Search Bar" replacement */
     .welcome-message-box {
-        background-color: #fff; /* Card background */
-        border-radius: 1.5rem; /* Match card radius */
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); /* Match card shadow */
-        padding: 1rem 2rem; /* Reduced vertical padding */
-        margin-bottom: 2rem; /* Space below it */
-        text-align: center; /* Center content */
-        display: flex; /* Use flexbox for vertical alignment */
-        align-items: center; /* Center content vertically */
-        justify-content: center; /* Center content horizontally */
-        min-height: 70px; /* Set a minimum height to make it more compact */
+        background-color: #fff; 
+        border-radius: 1.5rem; 
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); 
+        padding: 1rem 2rem;
+        margin-bottom: 2rem; 
+        text-align: center;
+        display: flex;
+        align-items: center; 
+        justify-content: center; 
+        min-height: 70px; 
     }
 
     .welcome-message-box p {
         color: #777;
-        margin: 0; /* Remove default margins to ensure single line */
-        font-size: 1rem; /* Slightly larger font for single line */
+        margin: 0;
+        font-size: 1rem;
         font-weight: 500;
     }
 
-    /* Progress Chart */
     .progress-card {
-        margin-top: 0; /* Adjust spacing since summary boxes are now separate */
+        margin-top: 0;
     }
 
     .progress-chart-wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 200px; /* Fixed height for the chart area */
+        height: 200px;
         position: relative;
         margin-bottom: 1.5rem;
     }
 
     .progress-chart-circle {
-        width: 150px; /* Size of the donut chart placeholder */
+        width: 150px; 
         height: 150px;
         border-radius: 50%;
         background: conic-gradient(
-            #D4536C 0% 40%, /* Pending */
-            #6C63FF 40% 72%, /* In Progress - using a new color for contrast, you can adjust */
-            #28A745 72% 100% /* Completed - using a new color for contrast, you can adjust */
+            #D4536C 0% 40%, 
+            #6C63FF 40% 72%, 
+            #28A745 72% 100%
         );
         display: flex;
         justify-content: center;
@@ -429,7 +419,7 @@
     .progress-legend {
         display: flex;
         justify-content: center;
-        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        flex-wrap: wrap; 
         gap: 1.5rem;
         margin-top: 1rem;
     }
@@ -446,13 +436,13 @@
         margin-right: 0.5rem;
     }
     .legend-color.pending { background-color: #D4536C; }
-    .legend-color.in-progress { background-color: #6C63FF; } /* Matches chart */
-    .legend-color.completed { background-color: #28A745; } /* Matches chart */
+    .legend-color.in-progress { background-color: #6C63FF; } 
+    .legend-color.completed { background-color: #28A745; }
 
     .view-tasks-btn {
-        background-color: #F8F8F9; /* Light background */
-        color: #D4536C; /* Theme color text */
-        border: 1px solid #D4536C; /* Border with theme color */
+        background-color: #F8F8F9; 
+        color: #D4536C;
+        border: 1px solid #D4536C;
         border-radius: 0.75rem;
         padding: 0.5rem 1rem;
         font-weight: 500;
@@ -464,19 +454,18 @@
         color: #fff;
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 991.98px) { /* Medium devices and below */
+    @media (max-width: 991.98px) { 
         .calendar-days {
-            flex-wrap: wrap; /* Allow days to wrap */
+            flex-wrap: wrap;
             justify-content: space-around;
         }
         .calendar-day {
             min-width: unset;
-            flex: 1 0 12%; /* Roughly 7 days per row on small screens */
+            flex: 1 0 12%; 
             margin: 0.2rem;
         }
         .task-summary-box {
-            min-height: 100px; /* Adjust height for smaller screens */
+            min-height: 100px; 
         }
         .task-summary-box h3 {
             font-size: 2rem;
@@ -485,16 +474,16 @@
             font-size: 0.9rem;
         }
         .task-summary-boxes {
-            flex-direction: column; /* Stack on smaller screens if needed, or keep wrap */
+            flex-direction: column; 
             gap: 1rem;
         }
         .welcome-message-box {
-            min-height: 60px; /* Even smaller on medium screens */
+            min-height: 60px;
             padding: 0.8rem 1.5rem;
         }
     }
 
-    @media (max-width: 767.98px) { /* Small devices and below */
+    @media (max-width: 767.98px) {
         .dashboard-container {
             padding: 1rem;
         }
@@ -522,7 +511,7 @@
         }
         .calendar-day {
             padding: 0.5rem 0.2rem;
-            flex: 1 0 13%; /* Adjust for 7 days */
+            flex: 1 0 13%;
         }
         .calendar-day strong {
             font-size: 1rem;
@@ -550,11 +539,11 @@
             font-size: 0.8rem;
         }
         .task-summary-boxes .col-6 {
-            padding-left: 0.5rem; /* Reduce gutter */
-            padding-right: 0.5rem; /* Reduce gutter */
+            padding-left: 0.5rem; 
+            padding-right: 0.5rem; 
         }
         .task-summary-box {
-            padding: 1rem 0.8rem; /* Further adjust padding */
+            padding: 1rem 0.8rem;
             min-height: 90px;
         }
         .task-summary-box h3 {
@@ -564,7 +553,7 @@
             font-size: 0.8rem;
         }
         .welcome-message-box {
-            min-height: 50px; /* Even smaller on small screens */
+            min-height: 50px;
             padding: 0.5rem 1rem;
         }
     }
@@ -599,13 +588,11 @@
                     <?php if (!empty($today_tasks)) : ?>
                         <?php foreach ($today_tasks as $task) : ?>
                             <?php
-                                // PHP category map - no 'Other' here
                                 $categoryMap = [
                                     1 => ['label' => 'Important', 'class' => 'important'],
                                     2 => ['label' => 'Work', 'class' => 'work'],
                                     3 => ['label' => 'Personal', 'class' => 'personal'],
                                 ];
-                                // Fallback to 'N/A' if category_id is not 1, 2, or 3
                                 $category = $categoryMap[$task['category_id']] ?? ['label' => 'N/A', 'class' => 'n-a'];
                                 $completed = ($task['status'] === 'completed');
                                 $formattedDate = date("F j, Y", strtotime($task['due_date']));
@@ -716,14 +703,14 @@
         const prevWeekBtn = document.getElementById('prevWeekBtn');
         const nextWeekBtn = document.getElementById('nextWeekBtn');
 
-        let currentDate = new Date(); // Start with today's date
-        const todayGlobal = new Date(); // Store today's date for persistent highlighting
+        let currentDate = new Date(); 
+        const todayGlobal = new Date(); 
 
         function renderCalendarDays(date) {
-            calendarDaysContainer.innerHTML = ''; // Clear existing days
+            calendarDaysContainer.innerHTML = ''; 
 
             const startOfWeek = new Date(date);
-            startOfWeek.setDate(date.getDate() - date.getDay()); // Go to Sunday of the current week
+            startOfWeek.setDate(date.getDate() - date.getDay()); 
 
             const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
@@ -773,10 +760,7 @@
         const tasksDoneCountElement = document.getElementById('tasksDoneCount');
         const tasksOverallCountElement = document.getElementById('tasksOverallCount');
 
-        // This function updates the counts displayed on the dashboard
-        // It relies on the *initial* PHP-rendered counts for global numbers
-        // and updates the local daily list counts dynamically.
-        // For truly real-time global counts, an additional AJAX call on task status change would be needed.
+    
         function updateTaskCounts() {
             let completedToday = 0;
             let totalToday = 0;
@@ -788,12 +772,7 @@
                     completedToday++;
                 }
             });
-            // These elements are meant to show GLOBAL counts, which are initially populated by PHP.
-            // If you want them to update when a *daily* task is marked complete/incomplete,
-            // you'd need an AJAX call to refresh the global counts from the backend,
-            // or perform a simple increment/decrement if you're certain it's a global task.
-            // For now, these summary boxes will remain as initially loaded from PHP for global counts,
-            // and the `updateTaskCounts` function primarily ensures correct display for *daily* tasks.
+            
         }
 
 
@@ -810,7 +789,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest' // Important for CodeIgniter's is_ajax_request()
+                        'X-Requested-With': 'XMLHttpRequest' 
                     },
                     body: JSON.stringify({ status: newStatus })
                 })
@@ -822,15 +801,7 @@
                         } else {
                             taskItem.classList.remove('completed');
                         }
-                        // Optionally, if you want to update global counts here, make another fetch:
-                        // fetch('<?= base_url('task/get_global_counts') ?>')
-                        // .then(res => res.json())
-                        // .then(counts => {
-                        //     tasksDoneCountElement.textContent = counts.completed;
-                        //     tasksOverallCountElement.textContent = counts.total;
-                        // });
-                        // For now, only local display change and local updateTaskCounts is sufficient for "Today's Schedule"
-                        updateTaskCounts(); // Update local counts based on today's tasks
+                        updateTaskCounts(); 
                     } else {
                         console.error('Failed to update task status:', data.message);
                         alert('Failed to update task status: ' + data.message);
@@ -847,7 +818,6 @@
             }
         });
 
-        // Initial count of currently displayed tasks (though the summary boxes are PHP-driven for global counts)
         updateTaskCounts();
 
  // --- Create New Task Inline Form ---
@@ -872,7 +842,7 @@
             const todayFormatted = `${year}-${month}-${day}`;
 
             newDueDateInput.value = todayFormatted; // Set default due date to today
-            newDueDateInput.setAttribute('min', todayFormatted); // *** THIS IS THE CRUCIAL LINE ***
+            newDueDateInput.setAttribute('min', todayFormatted);
         }
     });
 
@@ -881,7 +851,6 @@
         newTaskInput.value = ''; // Clear input on cancel
         newDueDateInput.value = ''; // Clear due date
         newCategorySelect.value = ''; // Reset category
-        // Optionally, reset the min attribute if you hide the form
         newDueDateInput.removeAttribute('min'); // Or set it back to the PHP value if you want
     });
 
@@ -902,20 +871,18 @@
                 'personal': 3
             };
 
-            // Get categoryId, default to null if not found (e.g., 'Select Category' is chosen)
             const categoryId = categoryMap[categoryValue] ?? null;
 
             fetch('<?= base_url('task/save') ?>', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest' // Indicate AJAX for CI controller
+                    'X-Requested-With': 'XMLHttpRequest' 
                 },
                 body: `title=${encodeURIComponent(taskText)}&due_date=${dueDate}&category_id=${categoryId}`
             })
             .then(response => {
                 if (!response.ok) {
-                    // If response is not OK (e.g., 400, 500 status), try to parse error as JSON
                     return response.json().then(errorData => { throw new Error(errorData.message || 'Server error'); });
                 }
                 return response.json();

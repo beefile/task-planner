@@ -7,7 +7,7 @@ class User_model extends CI_Model {
 
 public function email_exists($email) {
     $this->db->where('email', $email);
-    $query = $this->db->get('users'); // Replace with your table name
+    $query = $this->db->get('users');
 
     return $query->num_rows() > 0;
 }

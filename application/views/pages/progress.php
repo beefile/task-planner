@@ -1,8 +1,7 @@
-<?php $active = 'progress'; // For sidebar active state ?>
+<?php $active = 'progress'; ?>
 <?php include(APPPATH . 'views/templates/sidebar.php'); ?>
 
 <style>
-/* Basic Body & Wrapper Styles - Consistent with other pages */
 body {
     font-family: 'Segoe UI', sans-serif;
     background: #F8F8F9;
@@ -11,12 +10,11 @@ body {
 }
 
 .content-wrapper {
-    margin-left: 270px; /* Space for expanded sidebar */
+    margin-left: 270px; 
     padding: 40px 30px;
-    transition: margin-left 0.3s ease; /* Smooth transition for sidebar collapse/expand */
+    transition: margin-left 0.3s ease; 
 }
 
-/* Page Header - Consistent with task.php */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -33,10 +31,9 @@ body {
     font-size: 2.2em;
 }
 
-/* Summary Cards (similar to home.php) */
 .summary-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid for cards */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     margin-bottom: 40px;
 }
@@ -57,7 +54,7 @@ body {
 .summary-card h3 {
     font-size: 2.5em;
     font-weight: 700;
-    color: #D4536C; /* Default color */
+    color: #D4536C;
     margin-bottom: 5px;
     line-height: 1;
 }
@@ -68,14 +65,12 @@ body {
     margin-bottom: 0;
 }
 
-/* Specific colors for summary cards */
 .summary-card.total h3 { color: #555; }
-.summary-card.completed h3 { color: #28a745; } /* Green */
-.summary-card.pending h3 { color: #D4536C; } /* Pink */
-.summary-card.in-progress h3 { color: #ffc107; } /* Yellow/Orange */
+.summary-card.completed h3 { color: #28a745; }
+.summary-card.pending h3 { color: #D4536C; } 
+.summary-card.in-progress h3 { color: #ffc107; } 
 
 
-/* Progress Chart Section */
 .progress-chart-section {
     background: #fff;
     padding: 30px;
@@ -96,7 +91,7 @@ body {
 }
 
 .progress-chart-canvas-wrapper {
-    width: 250px; /* Larger size for the chart */
+    width: 250px;
     height: 250px;
     margin-bottom: 20px;
     position: relative;
@@ -105,15 +100,14 @@ body {
     align-items: center;
 }
 
-/* Placeholder for the donut chart */
 .progress-chart-donut {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     background: conic-gradient(
-        #D4536C 0% 40%, /* Pending */
-        #ffc107 40% 72%, /* In Progress */
-        #28a745 72% 100% /* Completed */
+        #D4536C 0% 40%,
+        #ffc107 40% 72%, 
+        #28a745 72% 100% 
     );
     display: flex;
     justify-content: center;
@@ -123,7 +117,7 @@ body {
     width: 60%;
     height: 60%;
     border-radius: 50%;
-    background-color: #F8F8F9; /* Background of the hole */
+    background-color: #F8F8F9;
 }
 
 .progress-legend {
@@ -152,7 +146,6 @@ body {
 .legend-color.completed { background-color: #28a745; }
 
 
-/* Task List by Status Section */
 .tasks-by-status-section {
     margin-top: 40px;
 }
@@ -191,11 +184,11 @@ body {
 }
 
 .task-item-card {
-    background-color: #f8f8f9; /* Lighter background for individual task items */
+    background-color: #f8f8f9;
     border-radius: 12px;
     padding: 15px 20px;
     margin-bottom: 15px;
-    box-shadow: inset 0 1px 5px rgba(0,0,0,0.03); /* Subtle inner shadow */
+    box-shadow: inset 0 1px 5px rgba(0,0,0,0.03);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -237,7 +230,6 @@ body {
     color: #FEA4AA;
 }
 
-/* No Tasks Message - Consistent with task.php */
 .no-tasks-message {
     margin-top: 40px;
     color: #888;
@@ -249,15 +241,14 @@ body {
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* Modal Styling (for View Details) - Reused from task.php */
 .modal-overlay {
-    display: none; /* Hidden by default */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+    background-color: rgba(0, 0, 0, 0.6); 
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -271,7 +262,7 @@ body {
     width: 90%;
     max-width: 600px;
     position: relative;
-    transform: translateY(20px); /* Slight animation effect */
+    transform: translateY(20px); 
     transition: transform 0.3s ease-out;
 }
 
@@ -329,7 +320,6 @@ body {
 }
 
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
     .content-wrapper {
         margin-left: 0;
@@ -344,7 +334,7 @@ body {
         font-size: 1.8em;
     }
     .summary-cards-grid {
-        grid-template-columns: 1fr; /* Stack cards on mobile */
+        grid-template-columns: 1fr;
     }
     .summary-card h3 {
         font-size: 2em;
@@ -420,11 +410,9 @@ body {
     <div class="progress-chart-section">
         <h2>Task Distribution</h2>
         <div class="progress-chart-canvas-wrapper">
-            <!-- This is a placeholder for a dynamic chart (e.g., using Chart.js) -->
             <div class="progress-chart-donut">
                 <div class="progress-chart-donut-inner"></div>
             </div>
-            <!-- If using Chart.js, you'd put a <canvas id="myProgressChart"></canvas> here -->
         </div>
         <div class="progress-legend">
     <div class="legend-item">

@@ -119,7 +119,7 @@ public function signup_action() {
 
     public function check_email_exists() {
     $email = $this->input->post('email');
-    $this->load->model('User_model'); // Replace with your actual user model
+    $this->load->model('User_model');
     $exists = $this->User_model->email_exists($email);
 
     echo json_encode(['exists' => $exists]);

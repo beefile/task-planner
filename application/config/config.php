@@ -326,8 +326,7 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/userguide3/libraries/encryption.html
 |
 */
-$config['encryption_key'] = 'idk_what_to_put_here_lmao';
-
+$config['encryption_key'] = 'd6f7e0e2f2b9c9ad3a8d2c5e0c2b7gscqzf4a';
 /*
 |--------------------------------------------------------------------------
 | Session Variables
