@@ -17,11 +17,18 @@ class Auth extends CI_Controller {
                 return $this->load->view('auth/forgot_password', $data);
             }
 
-            if (!password_verify($answer, $user->security_answer)) {
-                $data['error'] = "Incorrect security answer.";
-                $data['security_question'] = $this->map_security_question($user->security_question);
+            $selected_question = $this->input->post('security_question', true);
+
+            if ($user->security_question !== $selected_question) {
+                $data['error'] = "Security question does not match our records.";
                 return $this->load->view('auth/forgot_password', $data);
             }
+
+            if (!password_verify($answer, $user->security_answer)) {
+                $data['error'] = "Incorrect security answer.";
+                return $this->load->view('auth/forgot_password', $data);
+            }
+
 
             if ($password !== $confirm_password) {
                 $data['error'] = "Passwords do not match.";

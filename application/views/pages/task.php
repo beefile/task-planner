@@ -588,6 +588,27 @@ h1, h2, h3, h4, h5, h6 {
                     <label for="due_time">Due Time</label>
                     <input type="time" id="due_time" name="due_time">
                 </div>
+                
+                <div class="form-group">
+                    <label for="repeat">Repeat</label>
+                    <select name="repeat_type" id="repeat" class="form-control">
+                    <option value="none">None</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="custom">Custom</option>
+                    </select>
+
+                    <div id="custom-days-wrapper" style="display:none;">
+                    <label><input type="checkbox" name="custom_days[]" value="monday"> Monday</label>
+                    <label><input type="checkbox" name="custom_days[]" value="tuesday"> Tuesday</label>
+                    <label><input type="checkbox" name="custom_days[]" value="wednesday"> Wednesday</label>
+                    <label><input type="checkbox" name="custom_days[]" value="thursday"> Thursday</label>
+                    <label><input type="checkbox" name="custom_days[]" value="friday"> Friday</label>
+                    <label><input type="checkbox" name="custom_days[]" value="saturday"> Saturday</label>
+                    <label><input type="checkbox" name="custom_days[]" value="sunday"> Sunday</label>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="category_id">Category</label>
                     <select id="category_id" name="category_id" required>
@@ -725,6 +746,7 @@ h1, h2, h3, h4, h5, h6 {
             <p><strong>Description:</strong> <span id="viewTaskDescription"></span></p>
             <p><strong>Due Date:</strong> <span id="viewTaskDueDate"></span></p>
             <p><strong>Due Time:</strong> <span id="viewTaskDueTime"></span></p>
+            <p><strong>Repeat:</strong> <span id="viewRepeatType"></span></p>
             <p><strong>Category:</strong> <span id="viewTaskCategory"></span></p>
             <p><strong>Status:</b> <span id="viewTaskStatus"></span></p>
             <p><strong>Created At:</strong> <span id="viewTaskCreatedAt"></span></p>
@@ -832,6 +854,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('viewTaskDescription').textContent = task.description || 'N/A';
         document.getElementById('viewTaskDueDate').textContent = task.due_date || 'N/A';
         document.getElementById('viewTaskDueTime').textContent = task.due_time || 'N/A';
+        document.getElementById('viewRepeatType').textContent = task.repeat_type ?? 'None';
         document.getElementById('viewTaskCategory').textContent = getCategoryName(task.category_id);
         
         const viewTaskStatusSpan = document.getElementById('viewTaskStatus');
@@ -870,46 +893,52 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => viewTaskModal.classList.add('show'), 10);
     };
 
-    window.editTask = function (task) {
-        formTitle.textContent = 'Edit Task';
-        taskForm.action = '<?= base_url('task/save') ?>'; // Action remains save, backend handles update based on ID
-        document.getElementById('taskId').value = task.id;
-        document.getElementById('taskTitle').value = task.title;
-        document.getElementById('taskDate').value = task.due_date;
-        document.getElementById('due_time').value = task.due_time;
-        document.getElementById('category_id').value = task.category_id;
-        document.getElementById('status').value = task.status;
-        document.getElementById('description').value = task.description;
+window.editTask = function (task) {
+    formTitle.textContent = 'Edit Task';
+    taskForm.action = '<?= base_url('task/save') ?>'; // Action remains save, backend handles update based on ID
+    document.getElementById('taskId').value = task.id;
+    document.getElementById('taskTitle').value = task.title;
+    document.getElementById('taskDate').value = task.due_date;
+    document.getElementById('due_time').value = task.due_time;
+    document.getElementById('category_id').value = task.category_id;
+    document.getElementById('status').value = task.status;
+    document.getElementById('description').value = task.description;
 
-        const checklistItemsDiv = document.getElementById('checklistItems');
-        checklistItemsDiv.innerHTML = '';
+    // ✅ Set repeat type if available
+    if (task.repeat_type !== undefined && document.getElementById('repeat')) {
+        document.getElementById('repeat').value = task.repeat_type;
+    }
 
-        if (task.checklist_items) {
-            try {
-                const checklist = JSON.parse(task.checklist_items);
-                if (Array.isArray(checklist) && checklist.length > 0) {
-                    checklist.forEach(item => {
-                        const newItemDiv = document.createElement('div');
-                        newItemDiv.classList.add('checklist-item');
-                        newItemDiv.innerHTML = `
-                            <input type="text" name="checklist_items[]" placeholder="Checklist item" value="${htmlspecialchars(item.item || '')}">
-                            <button type="button" class="remove-checklist-item" onclick="removeChecklistItem(this)">x</button>
-                        `;
-                        checklistItemsDiv.appendChild(newItemDiv);
-                    });
-                }
-            } catch (e) {
-                console.error("Error parsing checklist_items for edit:", e);
+    const checklistItemsDiv = document.getElementById('checklistItems');
+    checklistItemsDiv.innerHTML = '';
+
+    if (task.checklist_items) {
+        try {
+            const checklist = JSON.parse(task.checklist_items);
+            if (Array.isArray(checklist) && checklist.length > 0) {
+                checklist.forEach(item => {
+                    const newItemDiv = document.createElement('div');
+                    newItemDiv.classList.add('checklist-item');
+                    newItemDiv.innerHTML = `
+                        <input type="text" name="checklist_items[]" placeholder="Checklist item" value="${htmlspecialchars(item.item || '')}">
+                        <button type="button" class="remove-checklist-item" onclick="removeChecklistItem(this)">x</button>
+                    `;
+                    checklistItemsDiv.appendChild(newItemDiv);
+                });
             }
+        } catch (e) {
+            console.error("Error parsing checklist_items for edit:", e);
         }
+    }
 
-        if (checklistItemsDiv.children.length === 0) {
-            addChecklistItem(); // Ensure at least one empty checklist item input exists
-        }
+    if (checklistItemsDiv.children.length === 0) {
+        addChecklistItem(); // Ensure at least one empty checklist item input exists
+    }
 
-        taskFormContainer.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    taskFormContainer.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 
     // Updated deleteTask to show custom modal
     window.deleteTask = function (taskId, taskTitle) {
@@ -954,60 +983,66 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Task Completion Toggle ---
-    document.querySelectorAll('.task-completion-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const taskId = this.dataset.taskId;
-            const newStatus = this.checked ? 'completed' : 'pending'; // Toggle between completed and pending
-            
-            // Optimistically update UI
-            const statusBadge = this.closest('tr').querySelector('.status-badge');
-            if (statusBadge) {
-                statusBadge.textContent = capitalizeFirstLetter(newStatus);
-                statusBadge.className = 'status-badge ' + newStatus.toLowerCase().replace(' ', '-');
-            }
+    // --- Task Completion Toggle ---
+document.querySelectorAll('.task-completion-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const taskId = this.dataset.taskId;
+        const newStatus = this.checked ? 'completed' : 'pending';
 
-            // Send AJAX request to update status in backend
-            fetch('<?= base_url('task/update_status/') ?>' + taskId, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest' // Identify as AJAX request
-                },
-                body: JSON.stringify({ status: newStatus })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    // If HTTP status is not 2xx, throw an error
-                    return response.text().then(text => { throw new Error(text) });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    console.log('Task status updated successfully to:', newStatus);
-                } else {
-                    console.error('Failed to update task status:', data.message);
-                    this.checked = !this.checked; 
-                    if (statusBadge) {
-                        const originalStatus = newStatus === 'completed' ? 'pending' : 'completed';
-                        statusBadge.textContent = capitalizeFirstLetter(originalStatus);
-                        statusBadge.className = 'status-badge ' + originalStatus.toLowerCase().replace(' ', '-');
-                    }
-                    alert('Failed to update task status: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error sending update request:', error);
-                // Revert UI on network error
+        const statusBadge = this.closest('tr').querySelector('.status-badge');
+        if (statusBadge) {
+            statusBadge.textContent = capitalizeFirstLetter(newStatus);
+            statusBadge.className = 'status-badge ' + newStatus.toLowerCase().replace(' ', '-');
+        }
+
+        fetch('<?= base_url('task/update_status/') ?>' + taskId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `status=${encodeURIComponent(newStatus)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                console.error('Failed to update task status:', data.message);
                 this.checked = !this.checked;
-                 if (statusBadge) {
+                if (statusBadge) {
                     const originalStatus = newStatus === 'completed' ? 'pending' : 'completed';
                     statusBadge.textContent = capitalizeFirstLetter(originalStatus);
                     statusBadge.className = 'status-badge ' + originalStatus.toLowerCase().replace(' ', '-');
                 }
-                alert('Network error while updating task status. Check console for details.');
-            });
+                alert('Failed to update task status: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error sending update request:', error);
+            this.checked = !this.checked;
+            if (statusBadge) {
+                const originalStatus = newStatus === 'completed' ? 'pending' : 'completed';
+                statusBadge.textContent = capitalizeFirstLetter(originalStatus);
+                statusBadge.className = 'status-badge ' + originalStatus.toLowerCase().replace(' ', '-');
+            }
+            alert('Network error while updating task status.');
         });
     });
 });
+
+
+        // === Handle Repeat Type Selection ===
+    const repeatSelect = document.getElementById('repeat');
+    const customDaysWrapper = document.getElementById('custom-days-wrapper');
+
+    if (repeatSelect) {
+        repeatSelect.addEventListener('change', function () {
+            if (this.value === 'custom') {
+                customDaysWrapper.style.display = 'block';
+            } else {
+                customDaysWrapper.style.display = 'none';
+            }
+        });
+    }
+
+});
+
 </script>

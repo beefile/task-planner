@@ -10,30 +10,12 @@ class Task extends CI_Controller {
         $this->load->helper(['url', 'form']);
     }
 
-    public function update_status($task_id) {
-        if (!$this->input->is_ajax_request()) {
-            show_404();
-            return; // Stop execution
-        }
-
-        $input_data = json_decode($this->input->raw_input_stream, true);
-        $new_status = $input_data['status'] ?? null;
-
-        // Basic validation
-        if ($task_id && $new_status && in_array($new_status, ['pending', 'completed', 'in-progress', 'cancelled'])) {
-            $data = ['status' => $new_status];
-            $result = $this->Task_model->update_task($task_id, $data);
-
-            if ($result) {
-                echo json_encode(['status' => 'success', 'message' => 'Task status updated.']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Failed to update task status in DB.']);
-            }
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid task ID or status provided.']);
-        }
-        exit();
+    public function update_task($task_id, $task_data) {
+        $this->db->where('id', $task_id); // ✅ 'id', not 'task_id'
+        $this->db->update('tasks', $task_data);
     }
+
+
     
     public function index() {
         if (!$this->session->userdata('user_id')) {
@@ -61,7 +43,6 @@ class Task extends CI_Controller {
 
     public function save() {
         if (!$this->session->userdata('user_id')) {
-            // For AJAX requests, send JSON error. For regular POST, redirect.
             if ($this->input->is_ajax_request()) {
                 echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
                 exit();
@@ -70,63 +51,74 @@ class Task extends CI_Controller {
         }
 
         $user_id = $this->session->userdata('user_id');
-        $task_id = $this->input->post('id'); // This would be null for new tasks
-        // Note: For 'save' from home.php, 'description' and 'checklist_items' will be null/empty
-        // Only 'title', 'due_date', 'category_id' are sent.
-        // 'status' will be 'pending' by default.
+        $task_id = $this->input->post('id');
 
-        // Filter allowed input fields for creation from home.php form
         $taskData = [
             'user_id'     => $user_id,
             'title'       => $this->input->post('title'),
             'due_date'    => $this->input->post('due_date'),
-            'category_id' => $this->input->post('category_id') ?? null, // Default to null if not selected
-            'status'      => 'pending', // New tasks start as pending
-            'created_at'  => date('Y-m-d H:i:s'),
+            'due_time'    => $this->input->post('due_time'), // ✅ fix
+            'description' => $this->input->post('description'), // ✅ fix
+            'category_id' => $this->input->post('category_id') ?? null,
+            'checklist_items' => null,
+            'repeat_type' => $this->input->post('repeat_type') ?? 'none',
+            'repeat_days' => null,
             'updated_at'  => date('Y-m-d H:i:s'),
-            'description' => null, // Not provided by home.php form
-            'due_time'    => null, // Not provided by home.php form
-            'checklist_items' => null // Not provided by home.php form
         ];
 
-        // Basic validation
         if (empty($taskData['title'])) {
             echo json_encode(['status' => 'error', 'message' => 'Task title is required.']);
             exit();
         }
 
-        // Ensure category_id is an integer or null
         if (!is_numeric($taskData['category_id']) && $taskData['category_id'] !== null) {
-            $taskData['category_id'] = null; // Or handle as an error
+            $taskData['category_id'] = null;
         }
 
+        $allowed_repeat_types = ['none', 'daily', 'weekly', 'custom'];
+        if (!in_array($taskData['repeat_type'], $allowed_repeat_types)) {
+            $taskData['repeat_type'] = 'none';
+        }
 
-        $new_task_id = $this->Task_model->insert_task($taskData); // Changed from update_task as home.php only adds
+        if ($taskData['repeat_type'] === 'custom') {
+            $custom_days = $this->input->post('custom_days');
+            if (is_array($custom_days) && count($custom_days) > 0) {
+                $taskData['repeat_days'] = implode(',', $custom_days);
+            }
+        }
 
-        if ($new_task_id) {
-            // For AJAX request, return JSON response
-            if ($this->input->is_ajax_request()) {
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => 'Task added successfully.',
-                    'task_id' => $new_task_id // Return the new ID
-                ]);
-                exit();
+        // Insert or Update logic
+        if ($task_id) {
+            // Update existing task
+            $updated = $this->Task_model->update_task($task_id, $taskData);
+            if ($updated) {
+                $response = ['status' => 'success', 'message' => 'Task updated successfully.', 'task_id' => $task_id];
             } else {
-                // Fallback for non-AJAX POST (if any)
-                $this->session->set_flashdata('success', 'Task added successfully.');
-                redirect('task'); // Or wherever appropriate
+                $response = ['status' => 'error', 'message' => 'Failed to update task.'];
             }
         } else {
-            if ($this->input->is_ajax_request()) {
-                echo json_encode(['status' => 'error', 'message' => 'Failed to add task.']);
-                exit();
+            // Insert new task
+            $taskData['status'] = 'pending';
+            $taskData['created_at'] = date('Y-m-d H:i:s');
+
+            $new_task_id = $this->Task_model->insert_task($taskData);
+            if ($new_task_id) {
+                $response = ['status' => 'success', 'message' => 'Task added successfully.', 'task_id' => $new_task_id];
             } else {
-                $this->session->set_flashdata('error', 'Something went wrong. Please try again.');
-                redirect('task');
+                $response = ['status' => 'error', 'message' => 'Failed to add task.'];
             }
         }
+
+        // Respond with JSON or fallback
+        if ($this->input->is_ajax_request()) {
+            echo json_encode($response);
+            exit();
+        } else {
+            $this->session->set_flashdata($response['status'], $response['message']);
+            redirect('task');
+        }
     }
+
         public function delete($id) {
         if (!$this->session->userdata('user_id')) {
             redirect('login');
@@ -137,5 +129,20 @@ class Task extends CI_Controller {
         $this->session->set_flashdata('error', 'Task deleted successfully.');
         redirect('task');
     }
+
+public function update_status($task_id) {
+    $status = $this->input->post('status');
+
+    log_message('debug', 'Received status: ' . $status);
+
+    if (!in_array($status, ['pending', 'completed', 'in-progress'])) {
+        echo json_encode(['success' => false, 'message' => 'Invalid status value: ' . $status]);
+        return;
+    }
+
+    $this->Task_model->update_task($task_id, ['status' => $status]);
+    echo json_encode(['success' => true]);
+}
+
 
 }
