@@ -13,41 +13,55 @@ class Task_model extends CI_Model {
 
 
     public function delete_task($task_id, $user_id) {
-        return $this->db->delete('tasks', ['id' => $task_id, 'user_id' => $user_id]);
+        return $this->db
+                    ->where('id', $task_id)
+                    ->where('user_id', $user_id)
+                    ->update('tasks', ['is_active' => 0]);
     }
 
     public function get_tasks_by_user($user_id) {
-        return $this->db
-                    ->where('user_id', $user_id)
-                    ->get('tasks')
-                    ->result();
+    return $this->db
+                ->where('user_id', $user_id)
+                ->where('is_active', 1)
+                ->get('tasks')
+                ->result();
     }
 
     public function get_tasks_by_date($user_id, $date) {
-        $this->db->where('user_id', $user_id);
-        $this->db->where('DATE(due_date)', $date);
-        return $this->db->get('tasks')->result_array();
+    return $this->db
+                ->where('user_id', $user_id)
+                ->where('DATE(due_date)', $date)
+                ->where('is_active', 1)
+                ->get('tasks')
+                ->result_array();
+    }   
+
+    public function count_tasks_by_status($user_id, $status) {
+    return $this->db
+                ->where('user_id', $user_id)
+                ->where('status', $status)
+                ->where('is_active', 1)
+                ->count_all_results('tasks');
     }
 
     public function count_tasks_by_user($user_id) {
-        return $this->db->where('user_id', $user_id)->count_all_results('tasks');
-    }
+    return $this->db
+                ->where('user_id', $user_id)
+                ->where('is_active', 1)
+                ->count_all_results('tasks');
+}
 
-    public function count_tasks_by_status($user_id, $status) {
-        return $this->db
-                    ->where('user_id', $user_id)
-                    ->where('status', $status)
-                    ->count_all_results('tasks');
-    }
 
     public function get_recent_tasks_by_user($user_id, $limit = 5) {
         return $this->db
                     ->where('user_id', $user_id)
+                    ->where('is_active', 1)
                     ->order_by('created_at', 'DESC')
                     ->limit($limit)
                     ->get('tasks')
                     ->result();
     }
+    
     public function get_categories_by_user($user_id) {
         return $this->db->get('categories')->result(); 
     }

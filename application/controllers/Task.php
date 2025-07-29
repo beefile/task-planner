@@ -16,7 +16,6 @@ class Task extends CI_Controller {
             return; // Stop execution
         }
 
-        // Get the raw POST data (for JSON)
         $input_data = json_decode($this->input->raw_input_stream, true);
         $new_status = $input_data['status'] ?? null;
 
@@ -33,7 +32,6 @@ class Task extends CI_Controller {
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Invalid task ID or status provided.']);
         }
-        // Ensure no extra output after JSON
         exit();
     }
     
@@ -129,14 +127,15 @@ class Task extends CI_Controller {
             }
         }
     }
-    public function delete($id) {
+        public function delete($id) {
         if (!$this->session->userdata('user_id')) {
             redirect('login');
         }
 
         $user_id = $this->session->userdata('user_id');
-        $this->Task_model->delete_task($id, $user_id);
+        $this->Task_model->delete_task($id, $user_id); // soft delete here
         $this->session->set_flashdata('error', 'Task deleted successfully.');
         redirect('task');
     }
+
 }
