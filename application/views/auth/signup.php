@@ -179,7 +179,6 @@
 
 
 <script>
-    // --- Utility Functions for Error Display ---
     function showError(inputElement, errorElement, message) {
         inputElement.classList.add('is-invalid');
         errorElement.textContent = message;
@@ -308,7 +307,7 @@
             hasError = true;
         }
 
-        // Confirm Password
+
         if (confirmPassword === '') {
             showError(confirmPasswordInput, confirmPasswordError, 'Confirm Password is required.');
             hasError = true;
@@ -317,32 +316,26 @@
             hasError = true;
         }
 
-        // Security Question
-        if (securityQuestion === '') { // Value of an unselected option is usually empty string
+        if (securityQuestion === '') { 
             showError(securityQuestionInput, securityQuestionError, 'Please select a security question.');
             hasError = true;
         }
 
-        // Security Answer
+
         if (securityAnswer === '') {
             showError(securityAnswerInput, securityAnswerError, 'Please provide an answer.');
             hasError = true;
         }
 
-        // ---Prevent submission if any error was found ---
         if (hasError) {
-            e.preventDefault(); // STOP the form from submitting
+            e.preventDefault(); 
         }
     });
 
-    // --- Email Existence Check on Blur (for better UX, but not blocking submit) ---
     emailInput.addEventListener('blur', function() {
         const email = emailInput.value.trim();
-        // Only proceed if email is not empty and seems to be in a valid format
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (email === '' || !emailRegex.test(email)) {
-            // If it's empty or invalid format, the main submit handler will catch it.
-            // No need to do an AJAX check on blur in this case.
             return;
         }
 
@@ -357,17 +350,13 @@
             .then(data => {
                 if (data.exists) {
                     showError(emailInput, emailError, 'This email is already registered.');
-                    // Note: This 'blur' check informs the user immediately,
-                    // but the primary 'submit' handler is what ultimately prevents submission
-                    // based on all validation rules, including this one if the user tries to submit.
                 } else {
                     hideError(emailInput, emailError);
                 }
             })
             .catch(error => {
                 console.error('Error checking email:', error);
-                // Optionally show a generic error if AJAX fails
-                // showError(emailInput, emailError, 'Error checking email availability. Please try again.');
+
             });
     });
 </script>

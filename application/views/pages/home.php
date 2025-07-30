@@ -291,7 +291,6 @@
         background-size: 1rem;
     }
 
-
     .new-task-form .form-actions {
         display: flex;
         gap: 0.5rem;
@@ -558,11 +557,196 @@
         }
     }
     canvas#taskStatusBarChart {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-}
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+    .btn-calculator {
+        background-color: #D4536C;
+        color: #fff;
+        border-radius: 1rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 1rem;
+        border: none;
+        transition: background-color 0.2s;
+    }
+    .btn-calculator:hover {
+        background-color: #FEA4AA;
+        color: #D4536C;
+    }
+    #calculatorModal .modal-content { 
+        border-radius: 24px; border: none; 
+    }
+    #calculatorModal .modal-header { 
+        border-bottom: 1px solid #eee; 
+    }
+    #calculatorModal .modal-title { 
+        color: #333; font-size: 24px; font-weight: 600; 
+    }
+    #calculatorModal #calc-display {
+        width: 100%; height: 80px; 
+        text-align: right; 
+        font-size: 40px; 
+        padding: 12px;
+        margin-bottom: 16px; 
+        border-radius: 12px; 
+        border: 1px solid #eee; 
+        outline: none;
+    }
+    #calculatorModal .calc-buttons { 
+        display: grid; 
+        grid-template-columns: repeat(4, 1fr); 
+        gap: 6px; 
+    }
+    #calculatorModal .num-btn, #calculatorModal .operator-btn {
+        padding: 15px 0; 
+        border-radius: 8px; 
+        font-size: 24px; 
+        border: none; 
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); 
+        transition: all 0.2s ease-in-out;
+    }
+    #calculatorModal .num-btn:active, #calculatorModal .operator-btn:active {
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1); 
+        transform: translateY(1px);
+    }
+    #calculatorModal .operator-btn { 
+        background-color: #C2185B; 
+        color: #fff; 
+    }
+    #calculatorModal .operator-btn:hover { 
+        background-color: #E91E63; 
+    }
+    #calculatorModal .num-btn, #calculatorModal .operator-btn[value="+/-"] {
+        background-color: #F8F8F9; 
+        color: #333; 
+        border: 1px solid #e0e0e0;
+    }
+    #calculatorModal .num-btn:hover, #calculatorModal .operator-btn[value="+/-"]:hover { 
+        background-color: #f0f0f0; 
+    }
+    #calculatorModal .modal-title {
+    color: #C2185B; 
+    }
+    #viewTaskModal {
+        display: none; 
+        position: fixed; 
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); 
+        justify-content: center; 
+        align-items: center; 
+        z-index: 1050;
+        opacity: 0; 
+        visibility: hidden; 
+        transition: opacity 0.3s ease, visibility 0.3s ease; 
+    }
 
+    #viewTaskModal.show {
+        opacity: 1;
+        visibility: visible;
+        display: flex; 
+    }
+
+    #viewTaskModal .modal-content {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+        max-width: 500px;
+        width: 90%;
+        transform: translateY(-20px); 
+        transition: transform 0.3s ease;
+    }
+
+    #viewTaskModal.show .modal-content {
+        transform: translateY(0);
+    }
+
+    #viewTaskModal .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 1.5rem;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: #555;
+    }
+
+    #viewTaskModal .modal-close-btn:hover {
+        color: #D4536C;
+    }
+
+    #viewTaskModal .modal-title {
+        color: #333;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    #viewTaskModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #555;
+    }
+
+    #viewTaskModal .modal-body p strong {
+        color: #333;
+        min-width: 100px; 
+        display: inline-block;
+    }
+
+    #viewTaskModal .modal-body h4 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: #333;
+        font-size: 1.2rem;
+    }
+
+    #viewTaskModal .modal-body ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #viewTaskModal .modal-body ul li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        color: #555;
+    }
+
+    #viewTaskModal .modal-body ul li input[type="checkbox"] {
+        margin-right: 0.75rem;
+        transform: scale(1.2);
+    }
+
+    #viewTaskModal .modal-body .status-badge {
+        padding: 0.2em 0.6em;
+        border-radius: 0.5em;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #fff;
+        display: inline-block;
+        margin-left: 5px;
+    }
+
+    #viewTaskModal .modal-body .status-badge.pending { 
+        background-color: #ffc107; 
+        color: #333;
+    }
+    #viewTaskModal .modal-body .status-badge.in-progress { 
+        background-color: #0d6efd; 
+    }
+    #viewTaskModal .modal-body .status-badge.completed { 
+        background-color: #28a745; 
+    }
 </style>
 
 <div class="content-wrapper dashboard-container">
@@ -649,8 +833,10 @@
         </div>
 
         <div class="col-lg-5">
-            <div class="welcome-message-box">
-                <p>Stay organized and conquer your day!</p>
+            <div class="d-grid gap-2 mb-3">
+                <button type="button" class="btn-calculator" data-bs-toggle="modal" data-bs-target="#calculatorModal">
+                    <i class="bi bi-calculator"></i> OPEN CALCULATOR
+                </button>
             </div>
 
             <div class="task-summary-boxes">
@@ -695,53 +881,245 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="calculatorModal" tabindex="-1" aria-labelledby="calculatorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="calculatorModalLabel">Calculator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="calc-display" placeholder="0" autocomplete="off" maxlength="16"/>
+        <div class="calc-buttons">
+          <button class="operator-btn" value="percentage_op">%</button>
+          <button class="operator-btn" value="CE">CE</button>
+          <button class="operator-btn" value="C">C</button>
+          <button class="operator-btn" value="÷">÷</button>
+          <button class="num-btn" value="7">7</button>
+          <button class="num-btn" value="8">8</button>
+          <button class="num-btn" value="9">9</button>
+          <button class="operator-btn" value="*">x</button>
+          <button class="num-btn" value="4">4</button>
+          <button class="num-btn" value="5">5</button>
+          <button class="num-btn" value="6">6</button>
+          <button class="operator-btn" value="-">-</button>
+          <button class="num-btn" value="1">1</button>
+          <button class="num-btn" value="2">2</button>
+          <button class="num-btn" value="3">3</button>
+          <button class="operator-btn" value="+">+</button>
+          <button class="num-btn" value="+/-">+/-</button>
+          <button class="num-btn" value="0">0</button>
+          <button class="num-btn" value=".">.</button>
+          <button class="operator-btn" value="=">=</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="viewTaskModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close-btn" onclick="closeModal('viewTaskModal')">&times;</button>
+        <h3 class="modal-title" id="viewTaskTitle">Task Details</h3>
+        <div class="modal-body">
+            <p><strong>Title:</strong> <span id="viewTaskDetailTitle"></span></p>
+            <p><strong>Description:</strong> <span id="viewTaskDescription"></span></p>
+            <p><strong>Due Date:</strong> <span id="viewTaskDueDate"></span></p>
+            <p><strong>Due Time:</strong> <span id="viewTaskDueTime"></span></p>
+            <p><strong>Repeat:</strong> <span id="viewRepeatType"></span></p>
+            <p><strong>Category:</strong> <span id="viewTaskCategory"></span></p>
+            <p><strong>Status:</b> <span id="viewTaskStatus"></span></p>
+            <p><strong>Created At:</strong> <span id="viewTaskCreatedAt"></span></p>
+            <p><strong>Last Updated:</strong> <span id="viewTaskUpdatedAt"></span></p>
+            <h4>Checklist:</h4>
+            <ul id="viewTaskChecklist"></ul>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- Live Calendar Functionality ---
+        function htmlspecialchars(str) {
+            var map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(str).replace(/[&<>"']/g, function (m) { return map[m]; });
+        }
+
+        function capitalizeFirstLetter(string) {
+            if (!string) return '';
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        const homePageCategoryMap = {
+            1: 'Important',
+            2: 'Work',
+            3: 'Personal',
+        };
+
+        function getHomePageCategoryName(categoryId) {
+            return homePageCategoryMap[categoryId] || 'N/A';
+        }
+
+
+        window.homeViewTask = function (task) {
+        const viewTaskModal = document.getElementById('viewTaskModal');
+            if (document.getElementById('viewTaskDetailTitle')) document.getElementById('viewTaskDetailTitle').textContent = task.title || 'N/A';
+            if (document.getElementById('viewTaskDescription')) document.getElementById('viewTaskDescription').textContent = task.description || 'No description provided.';
+            if (document.getElementById('viewTaskDueDate')) document.getElementById('viewTaskDueDate').textContent = task.due_date || 'N/A';
+            if (document.getElementById('viewTaskDueTime')) document.getElementById('viewTaskDueTime').textContent = task.due_time || 'N/A';
+            if (document.getElementById('viewRepeatType')) document.getElementById('viewRepeatType').textContent = task.repeat_type ? capitalizeFirstLetter(task.repeat_type) : 'None';
+            if (document.getElementById('viewTaskCategory')) document.getElementById('viewTaskCategory').textContent = getHomePageCategoryName(task.category_id);
+
+            const viewTaskStatusSpan = document.getElementById('viewTaskStatus');
+            if (viewTaskStatusSpan) {
+                viewTaskStatusSpan.textContent = task.status ? capitalizeFirstLetter(task.status) : 'N/A';
+                viewTaskStatusSpan.className = 'status-badge ' + (task.status ? task.status.toLowerCase().replace(' ', '-') : '');
+            }
+
+            if (document.getElementById('viewTaskCreatedAt')) document.getElementById('viewTaskCreatedAt').textContent = task.created_at || 'N/A';
+            if (document.getElementById('viewTaskUpdatedAt')) document.getElementById('viewTaskUpdatedAt').textContent = task.updated_at || 'N/A';
+
+            const checklistUl = document.getElementById('viewTaskChecklist');
+            if (checklistUl) {
+                checklistUl.innerHTML = '';
+
+                if (task.checklist_items) {
+                    try {
+                        const checklist = JSON.parse(task.checklist_items);
+                        if (Array.isArray(checklist) && checklist.length > 0) {
+                            checklist.forEach(item => {
+                                const li = document.createElement('li');
+                                const isCompleted = item.completed === true || item.completed === 'true';
+                                li.innerHTML = `<input type="checkbox" ${isCompleted ? 'checked' : ''} disabled><span>${htmlspecialchars(item.item || '')}</span>`;
+                                checklistUl.appendChild(li);
+                            });
+                        } else {
+                            checklistUl.innerHTML = '<li>No checklist items.</li>';
+                        }
+                    } catch (e) {
+                        console.error("Error parsing checklist_items:", e);
+                        checklistUl.innerHTML = '<li>Error loading checklist.</li>';
+                    }
+                } else {
+                    checklistUl.innerHTML = '<li>No checklist items.</li>';
+                }
+            }
+
+             if (viewTaskModal) {
+                viewTaskModal.style.display = 'flex'; 
+                setTimeout(() => viewTaskModal.classList.add('show'), 10); 
+            }
+        };
+        window.closeModal = function (modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => { modal.style.display = 'none'; }, 300); 
+            }
+        };
+
+        // logic for calendar
         const calendarDaysContainer = document.getElementById('calendarDaysContainer');
+        const dailyTasksList = document.getElementById('dailyTasksList');
         const prevWeekBtn = document.getElementById('prevWeekBtn');
         const nextWeekBtn = document.getElementById('nextWeekBtn');
 
-        let currentDate = new Date(); 
-        const todayGlobal = new Date(); 
+        let currentDate = new Date();
+        let selectedDate = new Date();
 
-        function renderCalendarDays(date) {
-            calendarDaysContainer.innerHTML = ''; 
+        function renderTasks(tasks) {
+            dailyTasksList.innerHTML = '';
+            if (!tasks || tasks.length === 0) {
+                dailyTasksList.innerHTML = '<p class="text-center text-muted mt-3">No tasks scheduled for this day.</p>';
+                return;
+            }
+            const categoryMap = {
+                1: { label: 'Important', class: 'important' },
+                2: { label: 'Work', class: 'work' },
+                3: { label: 'Personal', class: 'personal' }
+            };
 
-            const startOfWeek = new Date(date);
-            startOfWeek.setDate(date.getDate() - date.getDay()); 
+            tasks.forEach(task => {
+                const category = categoryMap[task.category_id] || { label: 'N/A', class: 'n-a' };
+                const isCompleted = task.status === 'completed';
+                const formattedDate = new Date(task.due_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                const taskElement = document.createElement('div');
+                taskElement.className = `task-item ${isCompleted ? 'completed' : ''}`;
+                taskElement.dataset.taskId = task.id;
 
+                taskElement.innerHTML = `
+                    <label class="task-checkbox-container">
+                        <input type="checkbox" data-task-id="${task.id}" ${isCompleted ? 'checked' : ''}>
+                        <span class="checkmark"></span>
+                    </label>
+                    <div class="task-details"> <h6>${htmlspecialchars(task.title)}
+                            <span class="category-tag category-${category.class}">${category.label}</span>
+                        </h6>
+                        <p>Due: ${formattedDate}</p>
+                    </div>`;
+
+                taskElement.addEventListener('click', function(event) {
+                    if (!event.target.closest('.task-checkbox-container')) {
+                        window.homeViewTask(task); 
+                    }
+                });
+
+                dailyTasksList.appendChild(taskElement);
+            });
+        }
+
+
+        async function fetchTasksForDate(dateString) {
+            try {
+                dailyTasksList.innerHTML = '<p class="text-center text-muted mt-3">Loading tasks...</p>';
+                const response = await fetch(`<?= base_url('planner/get_tasks_for_date/') ?>${dateString}`);
+                if (!response.ok) throw new Error('Network error');
+                const tasks = await response.json();
+                renderTasks(tasks);
+            } catch (error) {
+                console.error('Failed to fetch tasks:', error);
+                dailyTasksList.innerHTML = '<p class="text-center text-danger mt-3">Could not load tasks. Please try again.</p>';
+            }
+        }
+
+        function renderCalendarDays(dateToDisplay) {
+            calendarDaysContainer.innerHTML = '';
+            const startOfWeek = new Date(dateToDisplay);
+            startOfWeek.setDate(dateToDisplay.getDate() - startOfWeek.getDay());
             const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-
             for (let i = 0; i < 7; i++) {
                 const day = new Date(startOfWeek);
                 day.setDate(startOfWeek.getDate() + i);
-
                 const dayElement = document.createElement('div');
-                dayElement.classList.add('calendar-day');
-
-                // Check if this day is the globally 'today'
-                if (day.toDateString() === todayGlobal.toDateString()) {
-                    dayElement.classList.add('active'); // Add active class for today
+                dayElement.className = 'calendar-day';
+                if (day.toDateString() === selectedDate.toDateString()) {
+                    dayElement.classList.add('active');
                 }
 
+                const year = day.getFullYear();
+                const month = String(day.getMonth() + 1).padStart(2, '0');
+                const date = String(day.getDate()).padStart(2, '0');
+                const dateString = `${year}-${month}-${date}`;
+
+                dayElement.dataset.date = dateString;
                 dayElement.innerHTML = `<span>${dayNames[day.getDay()]}</span><strong>${day.getDate()}</strong>`;
-                dayElement.dataset.date = day.toISOString().split('T')[0]; // Store full date for later use
-
-                // Add click listener to each day (for future task loading)
                 dayElement.addEventListener('click', function() {
-                    document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('active'));
-                    this.classList.add('active');
-                    // In a real app, you'd fetch and display tasks for this.dataset.date
-                    console.log('Clicked date:', this.dataset.date);
+                    selectedDate = new Date(this.dataset.date + 'T00:00:00');
+                    renderCalendarDays(currentDate);
+                    fetchTasksForDate(this.dataset.date);
                 });
-
                 calendarDaysContainer.appendChild(dayElement);
             }
         }
 
-        // Event listeners for calendar navigation
         prevWeekBtn.addEventListener('click', function() {
             currentDate.setDate(currentDate.getDate() - 7);
             renderCalendarDays(currentDate);
@@ -752,234 +1130,211 @@
             renderCalendarDays(currentDate);
         });
 
-        // Initial render of calendar
         renderCalendarDays(currentDate);
 
-        // --- Task Checkbox and Clickable Task Functionality ---
-        const dailyTasksList = document.getElementById('dailyTasksList');
-        const tasksDoneCountElement = document.getElementById('tasksDoneCount');
-        const tasksOverallCountElement = document.getElementById('tasksOverallCount');
-
-    
-        function updateTaskCounts() {
-            let completedToday = 0;
-            let totalToday = 0;
-
-            document.querySelectorAll('#dailyTasksList .task-item').forEach(item => {
-                totalToday++;
-                const checkbox = item.querySelector('.task-checkbox-container input[type="checkbox"]');
-                if (checkbox && checkbox.checked) {
-                    completedToday++;
-                }
-            });
-            
-        }
-
+        fetchTasksForDate(selectedDate.toISOString().split('T')[0]);
 
         dailyTasksList.addEventListener('change', function(event) {
             if (event.target.matches('.task-checkbox-container input[type="checkbox"]')) {
-                event.stopPropagation(); // Stop propagation to prevent the parent <a> from being clicked
+                event.stopPropagation();
 
                 const taskItem = event.target.closest('.task-item');
-                const taskId = taskItem.dataset.taskId;
+                const taskId = event.target.dataset.taskId; 
                 const isCompleted = event.target.checked;
                 const newStatus = isCompleted ? 'completed' : 'pending';
 
                 fetch(`<?= base_url('task/update_status/') ?>${taskId}`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest' 
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify({ status: newStatus })
-                })
-                .then(response => response.json())
+                    body: `status=${encodeURIComponent(newStatus)}`
+                }).then(response => response.json())
                 .then(data => {
-                    if (data.status === 'success') {
-                        if (isCompleted) {
-                            taskItem.classList.add('completed');
-                        } else {
-                            taskItem.classList.remove('completed');
-                        }
-                        updateTaskCounts(); 
+                    if (data.success) {
+                        taskItem.classList.toggle('completed', isCompleted);
                     } else {
-                        console.error('Failed to update task status:', data.message);
-                        alert('Failed to update task status: ' + data.message);
-                        // Revert checkbox state if update fails
                         event.target.checked = !isCompleted;
+                        alert('Failed to update task: ' + (data.message || 'Unknown error.'));
                     }
                 })
                 .catch(error => {
                     console.error('Error updating task status:', error);
-                    alert('Error updating task status. Please try again.');
-                    // Revert checkbox state if network error
-                    event.target.checked = !isCompleted;
+                    event.target.checked = !isCompleted; 
+                    alert('A network error occurred while updating the task.');
                 });
             }
         });
 
-        updateTaskCounts();
 
- // --- Create New Task Inline Form ---
-    const toggleNewTaskFormBtn = document.getElementById('toggleNewTaskForm');
-    const newTaskForm = document.getElementById('newTaskForm');
-    const newTaskInput = document.getElementById('newTaskInput');
-    const newDueDateInput = document.getElementById('newDueDate'); // Get reference to the date input
-    const newCategorySelect = document.getElementById('newCategory');
-    const addNewTaskBtn = document.getElementById('addNewTask');
-    const cancelNewTaskBtn = document.getElementById('cancelNewTask');
+        const toggleNewTaskFormBtn = document.getElementById('toggleNewTaskForm');
+        const newTaskForm = document.getElementById('newTaskForm');
+        const newTaskInput = document.getElementById('newTaskInput');
+        const newDueDateInput = document.getElementById('newDueDate');
+        const newCategorySelect = document.getElementById('newCategory');
+        const addNewTaskBtn = document.getElementById('addNewTask');
+        const cancelNewTaskBtn = document.getElementById('cancelNewTask');
 
-    toggleNewTaskFormBtn.addEventListener('click', function() {
-        newTaskForm.classList.toggle('show');
-        if (newTaskForm.classList.contains('show')) {
-            newTaskInput.focus(); // Focus on the input when shown
+        if (toggleNewTaskFormBtn && newTaskForm && newTaskInput && newDueDateInput && newCategorySelect && addNewTaskBtn && cancelNewTaskBtn) {
+            toggleNewTaskFormBtn.addEventListener('click', function() {
+                newTaskForm.classList.toggle('show');
+                if (newTaskForm.classList.contains('show')) {
+                    newTaskInput.focus();
+                    const today = new Date();
+                    const todayFormatted = today.toISOString().split('T')[0];
+                    newDueDateInput.value = todayFormatted;
+                    newDueDateInput.setAttribute('min', todayFormatted);
+                }
+            });
 
-            // Set the minimum date for the date picker to today's date
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-            const day = String(today.getDate()).padStart(2, '0');
-            const todayFormatted = `${year}-${month}-${day}`;
+            cancelNewTaskBtn.addEventListener('click', function() {
+                newTaskForm.classList.remove('show');
+                newTaskInput.value = '';
+                newDueDateInput.value = '';
+                newCategorySelect.value = '';
+            });
 
-            newDueDateInput.value = todayFormatted; // Set default due date to today
-            newDueDateInput.setAttribute('min', todayFormatted);
+            addNewTaskBtn.addEventListener('click', function() {
+                const taskText = newTaskInput.value.trim();
+                const dueDate = newDueDateInput.value;
+                const categoryValue = newCategorySelect.value;
+                if (!taskText) {
+                    alert('Please enter a task title.');
+                    return;
+                }
+                const categoryMap = { 'important': 1, 'work': 2, 'personal': 3 };
+                const categoryId = categoryMap[categoryValue] ?? null;
+                fetch('<?= base_url('task/save') ?>', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+                    body: `title=${encodeURIComponent(taskText)}&due_date=${dueDate}&category_id=${categoryId}`
+                }).then(response => response.json()).then(data => {
+                    if (data.status === 'success') {
+                        alert('Task added successfully!');
+                        newTaskForm.classList.remove('show');
+                        newTaskInput.value = '';
+                        newDueDateInput.value = '';
+                        newCategorySelect.value = '';
+                        const activeDay = document.querySelector('.calendar-day.active');
+                        if(activeDay && activeDay.dataset.date === dueDate) {
+                            fetchTasksForDate(dueDate);
+                        }
+                    } else {
+                        alert('Failed to add task: ' + (data.message || 'Unknown error.'));
+                    }
+                }).catch(error => {
+                    console.error('Error saving task:', error);
+                    alert('Error saving task.');
+                });
+            });
         }
-    });
 
-    cancelNewTaskBtn.addEventListener('click', function() {
-        newTaskForm.classList.remove('show');
-        newTaskInput.value = ''; // Clear input on cancel
-        newDueDateInput.value = ''; // Clear due date
-        newCategorySelect.value = ''; // Reset category
-        newDueDateInput.removeAttribute('min'); // Or set it back to the PHP value if you want
-    });
 
-        addNewTaskBtn.addEventListener('click', function () {
-            const taskText = newTaskInput.value.trim();
-            const dueDate = newDueDateInput.value;
-            const categoryValue = newCategorySelect.value;
+        // logic for calculator
+        function initModernCalculator(displaySelector, buttonSelector) {
+            const display = document.querySelector(displaySelector);
+            const buttons = document.querySelectorAll(buttonSelector);
+            if (!display || buttons.length === 0) return;
 
-            if (!taskText) {
-                alert('Please enter a task title.');
-                return; // Stop execution if title is empty
+            function formatNumberWithCommas(numberString) {
+                if (!numberString || typeof numberString.toString !== 'function') return '';
+                let stringValue = numberString.toString();
+                if (stringValue.endsWith('.') || stringValue === '-') return stringValue;
+                let parts = stringValue.split('.');
+                parts[0] = parts[0].replace(/,/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return parts.join('.');
             }
 
-            // Category map for JS (no 'other')
-            const categoryMap = {
-                'important': 1,
-                'work': 2,
-                'personal': 3
-            };
+            function safeEval(str) {
+                try {
+                    let calculationStr = str.replace(/,/g, '');
+                    let evalStr = calculationStr.replace(/x/g, '*').replace(/÷/g, '/');
+                    if (!/^[\d\s\.\+\-\*\/\(\)%]*$/.test(evalStr)) return 'Error';
+                    evalStr = evalStr.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
+                    const result = Function('"use strict"; return (' + evalStr + ')')();
+                    return (typeof result === 'number' && isFinite(result)) ? result : 'Error';
+                } catch { return 'Error'; }
+            }
 
-            const categoryId = categoryMap[categoryValue] ?? null;
+            function calculateExpression(el) {
+                if (el.value.trim() === '') { el.value = '0'; return; }
+                const rawResult = safeEval(el.value);
+                el.value = formatNumberWithCommas(rawResult);
+            }
 
-            fetch('<?= base_url('task/save') ?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest' 
-                },
-                body: `title=${encodeURIComponent(taskText)}&due_date=${dueDate}&category_id=${categoryId}`
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(errorData => { throw new Error(errorData.message || 'Server error'); });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    // Category class map for JS (no 'other')
-                    const categoryClassMap = {
-                        1: { label: 'Important', class: 'important' },
-                        2: { label: 'Work', class: 'work' },
-                        3: { label: 'Personal', class: 'personal' }
-                    };
-
-                    // Use a fallback for the display if categoryId is null or unexpected
-                    const category = categoryClassMap[categoryId] ?? { label: 'N/A', class: 'n-a' };
-                    const formattedDate = new Date(dueDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-
-                    const taskItem = document.createElement('div');
-                    taskItem.classList.add('task-item');
-                    taskItem.dataset.taskId = data.task_id;
-
-                    taskItem.innerHTML = `
-                        <label class="task-checkbox-container">
-                            <input type="checkbox">
-                            <span class="checkmark"></span>
-                        </label>
-                        <a href="<?= base_url('task/view_details/') ?>${data.task_id}" class="task-link-area">
-                            <div class="task-details">
-                                <h6>${taskText}
-                                    <span class="category-tag category-${category.class}">${category.label}</span>
-                                </h6>
-                                <p>Due: ${formattedDate}</p>
-                            </div>
-                        </a>
-                    `;
-
-                    document.getElementById('dailyTasksList').appendChild(taskItem);
-
-                    // Reset and hide the form
-                    newTaskForm.classList.remove('show');
-                    newTaskInput.value = '';
-                    newDueDateInput.value = '';
-                    newCategorySelect.value = '';
-
-                    updateTaskCounts(); // Refresh counters (for daily tasks in this context)
-                    alert('Task added successfully!'); // Provide user feedback
-                } else {
-                    // Display specific error message from backend if available
-                    alert('Failed to add task: ' + (data.message || 'Unknown error.'));
-                }
-            })
-            .catch(error => {
-                console.error('Error saving task:', error);
-                alert('Error saving task. Please try again. ' + error.message);
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const val = button.value;
+                    let currentDisplay = display.value;
+                    if (val === 'C') { display.value = ''; }
+                    else if (val === 'CE') {
+                        let unformatted = currentDisplay.replace(/,/g, '');
+                        let cleared = unformatted.slice(0, -1) || '';
+                        display.value = formatNumberWithCommas(cleared);
+                    } else if (val === '=') { calculateExpression(display); }
+                    else if (val === 'percentage_op') {
+                        let result = safeEval(currentDisplay);
+                        display.value = formatNumberWithCommas(!isNaN(result) ? result / 100 : 'Error');
+                    } else if (val === '+/-') {
+                        let result = safeEval(currentDisplay);
+                        display.value = formatNumberWithCommas(!isNaN(result) ? result * -1 : 'Error');
+                    } else {
+                        let unformatted = currentDisplay.replace(/,/g, '');
+                        if (unformatted.length < 16) {
+                            let newValue = (unformatted === '0' && val !== '.') ? val : unformatted + val;
+                            display.value = formatNumberWithCommas(newValue);
+                        }
+                    }
+                });
             });
+
+            display.addEventListener('input', function(e) {
+                let cursorPosition = display.selectionStart;
+                let originalLength = display.value.length;
+                let rawValue = display.value.replace(/,/g, '');
+                let formattedValue = formatNumberWithCommas(rawValue);
+                display.value = formattedValue;
+                let newLength = display.value.length;
+                cursorPosition = cursorPosition + (newLength - originalLength);
+                display.setSelectionRange(cursorPosition, cursorPosition);
+            });
+
+            display.addEventListener('keydown', function(e) {
+                const allowedKeys = '0123456789+-*/.()%x÷';
+                if (e.key === 'Enter') { e.preventDefault(); calculateExpression(display); }
+                else if (e.key === 'Escape') { e.preventDefault(); display.value = ''; }
+                else if (!allowedKeys.includes(e.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        }
+        initModernCalculator('#calc-display', '#calculatorModal .num-btn, #calculatorModal .operator-btn');
+
+
+        // logic for the chart
+        const ctx = document.getElementById('taskStatusBarChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Pending', 'In Progress', 'Completed'],
+                datasets: [{
+                    label: 'Task Status',
+                    data: [
+                        <?= isset($percent_pending) ? $percent_pending : 0 ?>,
+                        <?= isset($percent_in_progress) ? $percent_in_progress : 0 ?>,
+                        <?= isset($percent_completed) ? $percent_completed : 0 ?>
+                    ],
+                    backgroundColor: ['#D4536C', '#6C63FF', '#28A745'],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, max: 100 } }
+            }
         });
     });
-
-    // --- Bar Chart for Task Progress ---
-const ctx = document.getElementById('taskStatusBarChart').getContext('2d');
-
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Pending', 'In Progress', 'Completed'],
-        datasets: [{
-            label: 'Task Status',
-            data: [
-                <?= isset($percent_pending) ? $percent_pending : 0 ?>,
-                <?= isset($percent_in_progress) ? $percent_in_progress : 0 ?>,
-                <?= isset($percent_completed) ? $percent_completed : 0 ?>
-            ],
-            backgroundColor: [
-                '#D4536C',
-                '#6C63FF',
-                '#28A745'
-            ],
-            borderRadius: 10
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 100
-            }
-        }
-    }
-});
-
 </script>

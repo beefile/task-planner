@@ -386,7 +386,6 @@ body {
         <h1>Your Progress Overview</h1>
     </div>
 
-    <!-- Summary Cards -->
     <div class="summary-cards-grid">
         <div class="summary-card total">
             <h3 id="totalTasksCount">0</h3>
@@ -406,7 +405,6 @@ body {
         </div>
     </div>
 
-    <!-- Progress Chart Section -->
     <div class="progress-chart-section">
         <h2>Task Distribution</h2>
         <div class="progress-chart-canvas-wrapper">
@@ -434,19 +432,16 @@ body {
 
     </div>
 
-    <!-- Tasks Grouped by Status -->
     <div class="tasks-by-status-section">
         <h2>Detailed Task Breakdown</h2>
 
         <?php
-        // Organize tasks by status for display
         $tasksByStatus = [
             'pending' => [],
             'in-progress' => [],
             'completed' => [],
         ];
 
-        // Ensure $tasks is an array, even if empty or not set
         if (isset($tasks) && is_array($tasks)) {
             foreach ($tasks as $task) {
                 $status = strtolower($task->status);
@@ -489,7 +484,6 @@ body {
     </div>
 </div>
 
-<!-- View Task Details Modal (Reused from task.php) -->
 <div id="viewTaskModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close-btn" onclick="closeModal('viewTaskModal')">&times;</button>
@@ -505,7 +499,6 @@ body {
             <p><strong>Last Updated:</strong> <span id="viewTaskUpdatedAt"></span></p>
             <h4>Checklist:</h4>
             <ul id="viewTaskChecklist" style="margin-top: 5px;">
-                <!-- Checklist items will be populated here by JS -->
             </ul>
         </div>
     </div>
@@ -513,14 +506,12 @@ body {
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- Data for Summary Cards and Chart ---
         const tasks = <?php echo json_encode(isset($tasks) ? $tasks : []); ?>;
         const categories = <?php echo json_encode(isset($categories) ? $categories : []); ?>;
 
-        // Populate category map for lookup
         const categoryMap = {};
         categories.forEach(cat => {
-            categoryMap[cat.id] = cat.category; // Assuming 'category' is the name column
+            categoryMap[cat.id] = cat.category;
         });
 
         let totalTasks = tasks.length;
@@ -542,21 +533,18 @@ body {
             }
         });
 
-        // Update Summary Cards
         document.getElementById('totalTasksCount').textContent = totalTasks;
         document.getElementById('completedTasksCount').textContent = completedTasks;
         document.getElementById('pendingTasksCount').textContent = pendingTasks;
         document.getElementById('inProgressTasksCount').textContent = inProgressTasks;
 
-        // Update Chart Legend Percentages (basic calculation)
         const updateChartPercentages = () => {
             if (totalTasks === 0) {
                 document.getElementById('legendPendingPercent').textContent = '0%';
                 document.getElementById('legendInProgressPercent').textContent = '0%';
                 document.getElementById('legendCompletedPercent').textContent = '0%';
-                // Also update the donut chart background to be solid grey or empty if no tasks
                 const donut = document.querySelector('.progress-chart-donut');
-                if (donut) donut.style.background = '#e0e0e0'; // Grey if no tasks
+                if (donut) donut.style.background = '#e0e0e0'; 
                 return;
             }
 
@@ -568,7 +556,6 @@ body {
             document.getElementById('legendInProgressPercent').textContent = `${inProgressPercent}%`;
             document.getElementById('legendCompletedPercent').textContent = `${completedPercent}%`;
 
-            // Update the conic-gradient for the donut chart placeholder
             const donut = document.querySelector('.progress-chart-donut');
             if (donut) {
                 let currentAngle = 0;
@@ -593,9 +580,8 @@ body {
             }
         };
 
-        updateChartPercentages(); // Call on load
+        updateChartPercentages(); 
 
-        // --- View Task Details Modal Logic (Reused from task.php) ---
         window.viewTask = function(task) {
             document.getElementById('viewTaskDetailTitle').textContent = task.title;
             document.getElementById('viewTaskDescription').textContent = task.description || 'N/A';
@@ -607,8 +593,7 @@ body {
             document.getElementById('viewTaskUpdatedAt').textContent = task.updated_at || 'N/A';
 
             const checklistUl = document.getElementById('viewTaskChecklist');
-            checklistUl.innerHTML = ''; // Clear previous items
-
+            checklistUl.innerHTML = ''; 
             if (task.checklist_items) {
                 try {
                     const checklist = JSON.parse(task.checklist_items);
@@ -630,26 +615,22 @@ body {
                 checklistUl.innerHTML = '<li>No checklist items.</li>';
             }
 
-            document.getElementById('viewTaskModal').style.display = 'flex'; // Show modal
+            document.getElementById('viewTaskModal').style.display = 'flex'; 
         };
 
-        // Universal close modal function
         window.closeModal = function(modalId) {
             document.getElementById(modalId).style.display = 'none';
         };
 
-        // Helper function to capitalize first letter (for display)
         function capitalizeFirstLetter(string) {
             if (!string) return '';
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
-        // Helper function to get category name dynamically from the passed categories
         function getCategoryName(categoryId) {
             return categoryMap[categoryId] || 'Unknown Category';
         }
 
-        // Helper function for HTML escaping in JS (for dynamically loaded content)
         function htmlspecialchars(str) {
             var map = {
                 '&': '&amp;',

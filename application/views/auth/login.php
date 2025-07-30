@@ -139,7 +139,6 @@ a.form-text:hover {
   const loginForm = document.getElementById('loginForm');
   const emailInput = document.getElementById('email');
 
-  // Updated IDs for error messages to match CSS classes
   const emailError = document.getElementById('email-error');
   const passwordError = document.getElementById('password-error');
 
@@ -150,38 +149,33 @@ a.form-text:hover {
     this.classList.toggle('bi-eye-slash');
   });
 
-  // Helper function to show error
   function showError(inputElement, errorElement, message) {
-    inputElement.classList.add('is-invalid'); // Add invalid class to input
+    inputElement.classList.add('is-invalid');
     errorElement.textContent = message;
-    errorElement.classList.add('show'); // Show the error message smoothly
+    errorElement.classList.add('show'); 
   }
 
-  // Helper function to hide error
   function hideError(inputElement, errorElement) {
-    inputElement.classList.remove('is-invalid'); // Remove invalid class
-    errorElement.classList.remove('show'); // Hide the error message smoothly
-    errorElement.textContent = ''; // Clear text
+    inputElement.classList.remove('is-invalid');
+    errorElement.classList.remove('show');
+    errorElement.textContent = '';
   }
 
   loginForm.addEventListener('submit', function(e) {
     let hasError = false;
 
-    // Reset all errors and invalid states before validating
     hideError(emailInput, emailError);
     hideError(passwordInput, passwordError);
 
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    // Email Validation (more robust)
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
       showError(emailInput, emailError, 'Enter a valid email address (e.g., user@domain.com).');
       hasError = true;
     }
 
-    // Password Validation (12+ chars, uppercase, lowercase, number, symbol)
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$/;
     if (!strongPasswordRegex.test(password)) {
       showError(passwordInput, passwordError, 'Password must be at least 12 characters long and include at least one uppercase letter, one lowercase letter, one number, and one symbol.');
@@ -189,7 +183,7 @@ a.form-text:hover {
     }
 
     if (hasError) {
-      e.preventDefault(); // Prevent form submission if there are errors
+      e.preventDefault();
     }
   });
 </script>

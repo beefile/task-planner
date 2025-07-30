@@ -549,6 +549,83 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1em;
     }
 }
+.pagination-links {
+    margin-top: 50px; /* INCREASED: More generous space above the pagination */
+    text-align: center;
+    padding: 15px 0;
+    display: flex;
+    justify-content: center; /* Ensures horizontal centering */
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.0em;
+}
+
+.pagination-links a,
+.pagination-links span {
+    display: inline-block;
+    padding: 5px 8px;
+    color: #555;
+    text-decoration: none;
+    transition: color 0.2s ease, font-weight 0.2s ease, text-decoration 0.2s ease;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.pagination-links a:hover {
+    color: #D4536C;
+    text-decoration: underline;
+}
+
+.pagination-links .current-page {
+    color: #D4536C;
+    font-weight: 700;
+    cursor: default;
+    text-decoration: none;
+}
+
+.pagination-links .current-page:hover {
+    color: #D4536C;
+    text-decoration: none;
+}
+
+.pagination-links a:first-child,
+.pagination-links a:last-child,
+.pagination-links a[rel="next"],
+.pagination-links a[rel="prev"] {
+    font-weight: 600;
+    color: #777;
+}
+
+.pagination-links a:first-child:hover,
+.pagination-links a:last-child:hover,
+.pagination-links a[rel="next"]:hover,
+.pagination-links a[rel="prev"]:hover {
+    color: #D4536C;
+}
+
+
+@media (max-width: 768px) {
+    .pagination-links {
+        margin-top: 35px;
+        gap: 12px;
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination-links {
+        margin-top: 25px; 
+        padding: 10px 0;
+        gap: 10px;
+        font-size: 0.9em;
+    }
+    .pagination-links a,
+    .pagination-links span {
+        padding: 3px 6px;
+    }
+}
 </style>
 <div class="content-wrapper">
     <div class="page-header">
@@ -731,6 +808,7 @@ h1, h2, h3, h4, h5, h6 {
                     </tbody>
                 </table>
             </div>
+            <?php if (isset($pagination_links)) echo $pagination_links; ?>
         </div>
     <?php else: ?>
         <p class="no-tasks-message">You have no tasks yet! Click "Create New Task" to add one.</p>
@@ -783,16 +861,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const deleteConfirmModal = document.getElementById('deleteConfirmModal');
     const taskToDeleteTitleSpan = document.getElementById('taskToDeleteTitle');
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-    let currentTaskIdToDelete = null; // Variable to store the ID of the task being deleted
+    let currentTaskIdToDelete = null;
 
     const phpCategories = <?php echo json_encode(isset($categories) ? $categories : []); ?>;
     const categoryMap = {};
-    // Populate categoryMap from PHP data
     phpCategories.forEach(cat => {
         categoryMap[cat.id] = cat.category;
     });
 
-    // Fallback if categories are not loaded from DB
     if (Object.keys(categoryMap).length === 0) {
         Object.assign(categoryMap, {
             1: 'Work',
@@ -805,14 +881,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Show/hide task form
     showTaskFormBtn.addEventListener('click', function () {
         if (taskFormContainer.style.display === 'none' || taskFormContainer.style.display === '') {
             resetTaskForm();
             formTitle.textContent = 'Create Task';
             taskForm.action = '<?= base_url('task/save') ?>';
             taskFormContainer.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             taskFormContainer.style.display = 'none';
         }
@@ -889,13 +964,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         viewTaskModal.style.display = 'flex';
-        // Add a class to trigger the modal-content animation
         setTimeout(() => viewTaskModal.classList.add('show'), 10);
     };
 
 window.editTask = function (task) {
     formTitle.textContent = 'Edit Task';
-    taskForm.action = '<?= base_url('task/save') ?>'; // Action remains save, backend handles update based on ID
+    taskForm.action = '<?= base_url('task/save') ?>'; 
     document.getElementById('taskId').value = task.id;
     document.getElementById('taskTitle').value = task.title;
     document.getElementById('taskDate').value = task.due_date;
@@ -904,7 +978,6 @@ window.editTask = function (task) {
     document.getElementById('status').value = task.status;
     document.getElementById('description').value = task.description;
 
-    // ✅ Set repeat type if available
     if (task.repeat_type !== undefined && document.getElementById('repeat')) {
         document.getElementById('repeat').value = task.repeat_type;
     }
@@ -932,7 +1005,7 @@ window.editTask = function (task) {
     }
 
     if (checklistItemsDiv.children.length === 0) {
-        addChecklistItem(); // Ensure at least one empty checklist item input exists
+        addChecklistItem();
     }
 
     taskFormContainer.style.display = 'block';
@@ -940,7 +1013,6 @@ window.editTask = function (task) {
 };
 
 
-    // Updated deleteTask to show custom modal
     window.deleteTask = function (taskId, taskTitle) {
         currentTaskIdToDelete = taskId;
         taskToDeleteTitleSpan.textContent = `"${taskTitle.trim()}"`;
@@ -948,18 +1020,17 @@ window.editTask = function (task) {
         setTimeout(() => deleteConfirmModal.classList.add('show'), 10);
     };
 
-    // Event listener for the confirm delete button inside the modal
     confirmDeleteBtn.addEventListener('click', function() {
         if (currentTaskIdToDelete) {
             window.location.href = '<?= base_url('task/delete/') ?>' + currentTaskIdToDelete;
         }
-        closeModal('deleteConfirmModal'); // Close the modal after action
+        closeModal('deleteConfirmModal');
     });
 
     window.closeModal = function (modalId) {
         const modal = document.getElementById(modalId);
-        modal.classList.remove('show'); // Remove class to trigger animation reverse
-        modal.style.display = 'none'; // Hide after animation (or immediately if no animation)
+        modal.classList.remove('show'); 
+        modal.style.display = 'none';
     };
 
     function capitalizeFirstLetter(string) {
@@ -982,8 +1053,6 @@ window.editTask = function (task) {
         return String(str).replace(/[&<>"']/g, function (m) { return map[m]; });
     }
 
-    // --- Task Completion Toggle ---
-    // --- Task Completion Toggle ---
 document.querySelectorAll('.task-completion-checkbox').forEach(checkbox => {
     checkbox.addEventListener('change', function() {
         const taskId = this.dataset.taskId;
@@ -1029,7 +1098,6 @@ document.querySelectorAll('.task-completion-checkbox').forEach(checkbox => {
 });
 
 
-        // === Handle Repeat Type Selection ===
     const repeatSelect = document.getElementById('repeat');
     const customDaysWrapper = document.getElementById('custom-days-wrapper');
 

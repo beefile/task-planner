@@ -125,4 +125,18 @@ public function signup_action() {
     echo json_encode(['exists' => $exists]);
 }
 
+public function get_tasks_for_date($date) {
+        if (!$this->session->userdata('user_id')) {
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+
+        $user_id = $this->session->userdata('user_id');
+
+        $tasks = $this->Task_model->get_tasks_by_date($user_id, $date);
+
+        $this->output
+             ->set_content_type('application/json')
+             ->set_output(json_encode($tasks));
+    }
 }

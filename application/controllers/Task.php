@@ -8,24 +8,48 @@ class Task extends CI_Controller {
         $this->load->model('Task_model');
         $this->load->library('session');
         $this->load->helper(['url', 'form']);
+        $this->load->library('pagination');
     }
 
     public function update_task($task_id, $task_data) {
-        $this->db->where('id', $task_id); // ✅ 'id', not 'task_id'
+        $this->db->where('id', $task_id); 
         $this->db->update('tasks', $task_data);
     }
 
 
     
-    public function index() {
+      public function index() {
         if (!$this->session->userdata('user_id')) {
             redirect('login');
         }
 
         $user_id = $this->session->userdata('user_id');
-        $data['tasks'] = $this->Task_model->get_tasks_by_user($user_id);
 
-        // Get categories and create a map
+        $config['base_url'] = base_url('task/index');
+        $config['total_rows'] = $this->Task_model->count_active_tasks_by_user($user_id);
+        $config['per_page'] = 10;
+        $config['uri_segment'] = 3; 
+
+        $config['full_tag_open'] = '<div class="pagination-links">';
+        $config['full_tag_close'] = '</div>';
+        $config['first_link'] = 'First';
+        $config['last_link'] = 'Last';
+        $config['next_link'] = '&gt;';
+        $config['prev_link'] = '&lt;';
+        $config['cur_tag_open'] = '<a class="current-page">';
+        $config['cur_tag_close'] = '</a>';
+        $config['num_tag_open'] = '<span>';
+        $config['num_tag_close'] = '</span>';
+        $config['attributes'] = array('class' => 'pagination-link');
+
+        $this->pagination->initialize($config);
+
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+
+        $data['tasks'] = $this->Task_model->get_paginated_tasks_by_user($user_id, $config['per_page'], $page);
+        
+        $data['pagination_links'] = $this->pagination->create_links();
+
         $categories = $this->Task_model->get_categories_by_user($user_id);
         $categoryMap = [];
         foreach ($categories as $cat) {
@@ -39,9 +63,7 @@ class Task extends CI_Controller {
         $this->load->view('templates/sidebar', ['active' => 'task']);
         $this->load->view('pages/task', $data);
         $this->load->view('templates/footer');
-    }
-
-    public function save() {
+    }    public function save() {
         if (!$this->session->userdata('user_id')) {
             if ($this->input->is_ajax_request()) {
                 echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
@@ -57,8 +79,8 @@ class Task extends CI_Controller {
             'user_id'     => $user_id,
             'title'       => $this->input->post('title'),
             'due_date'    => $this->input->post('due_date'),
-            'due_time'    => $this->input->post('due_time'), // ✅ fix
-            'description' => $this->input->post('description'), // ✅ fix
+            'due_time'    => $this->input->post('due_time'), 
+            'description' => $this->input->post('description'),
             'category_id' => $this->input->post('category_id') ?? null,
             'checklist_items' => null,
             'repeat_type' => $this->input->post('repeat_type') ?? 'none',
@@ -87,9 +109,7 @@ class Task extends CI_Controller {
             }
         }
 
-        // Insert or Update logic
         if ($task_id) {
-            // Update existing task
             $updated = $this->Task_model->update_task($task_id, $taskData);
             if ($updated) {
                 $response = ['status' => 'success', 'message' => 'Task updated successfully.', 'task_id' => $task_id];
@@ -97,7 +117,6 @@ class Task extends CI_Controller {
                 $response = ['status' => 'error', 'message' => 'Failed to update task.'];
             }
         } else {
-            // Insert new task
             $taskData['status'] = 'pending';
             $taskData['created_at'] = date('Y-m-d H:i:s');
 
@@ -109,7 +128,6 @@ class Task extends CI_Controller {
             }
         }
 
-        // Respond with JSON or fallback
         if ($this->input->is_ajax_request()) {
             echo json_encode($response);
             exit();
@@ -125,7 +143,7 @@ class Task extends CI_Controller {
         }
 
         $user_id = $this->session->userdata('user_id');
-        $this->Task_model->delete_task($id, $user_id); // soft delete here
+        $this->Task_model->delete_task($id, $user_id); 
         $this->session->set_flashdata('error', 'Task deleted successfully.');
         redirect('task');
     }

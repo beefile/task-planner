@@ -19,6 +19,22 @@ class Task_model extends CI_Model {
                     ->update('tasks', ['is_active' => 0]);
     }
 
+    public function count_active_tasks_by_user($user_id) { 
+        return $this->db
+                    ->where('user_id', $user_id)
+                    ->where('is_active', 1)
+                    ->count_all_results('tasks');
+    }
+
+    public function get_paginated_tasks_by_user($user_id, $limit, $start) {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('is_active', 1);
+        $this->db->order_by('due_date', 'DESC'); 
+        $this->db->limit($limit, $start);
+        $query = $this->db->get('tasks');
+        return $query->result();
+    }
+
     public function get_tasks_by_user($user_id) {
     return $this->db
                 ->where('user_id', $user_id)

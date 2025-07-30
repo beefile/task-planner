@@ -16,7 +16,31 @@
     </div>
   </div>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const calcModal = document.querySelector('.modal');
+  const openBtn = document.getElementById('calculator-toggle');
+  const closeBtn = document.querySelector('.btn-close');
 
+  // Open calculator
+  openBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    calcModal.style.display = 'flex';
+  });
+
+  // Close calculator
+  closeBtn.addEventListener('click', () => {
+    calcModal.style.display = 'none';
+  });
+
+  // Close if click outside the modal content
+  window.addEventListener('click', (e) => {
+    if (e.target === calcModal) {
+      calcModal.style.display = 'none';
+    }
+  });
+});
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

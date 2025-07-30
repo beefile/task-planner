@@ -1,5 +1,4 @@
    <style>
-        /* Basic reset and typography */
         * {
             box-sizing: border-box;
         }
@@ -9,24 +8,23 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: 'Inter', sans-serif; /* Changed to Inter as per guidelines */
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(to bottom, #D4536C, #FEA4AA, #F8F8F9);
-            display: flex; /* Use flex for centering the card */
+            display: flex; 
             justify-content: center;
             align-items: center;
-            padding: 5vh 1rem; /* Vertical padding and horizontal padding for small screens */
-            min-height: 100vh; /* Ensure body takes full viewport height */
+            padding: 5vh 1rem; 
+            min-height: 100vh;
         }
 
-        /* Login card styling */
         .login-card {
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             padding: 3rem;
-            width: 100%; /* Take full width up to max-width */
-            max-width: 850px; /* Max width for larger screens */
-            margin: auto; /* Center the card horizontally if it's smaller than max-width */
+            width: 100%;
+            max-width: 850px; 
+            margin: auto; 
         }
 
         .login-card h3 {
@@ -44,7 +42,6 @@
             font-size: 0.95rem;
         }
 
-        /* Form element styling */
         .form-label {
             font-weight: 600;
             font-size: 0.95rem;
@@ -54,7 +51,7 @@
         }
 
         .form-control {
-            width: 100%; /* Always take full width of its container */
+            width: 100%; 
             border-radius: 12px;
             padding: 0.75rem 1rem;
             border: 1px solid #ced4da;
@@ -73,19 +70,17 @@
             color: #555;
         }
 
-        /* Flexbox for form rows - Default to two columns */
         .form-row {
             display: flex;
-            flex-wrap: wrap; /* Allow columns to wrap to the next line */
-            gap: 2rem; /* Space between columns */
+            flex-wrap: wrap; 
+            gap: 2rem; 
         }
 
         .form-col {
-            flex: 1 1 0; /* Allow columns to grow and shrink, with initial flex-basis of 0 */
-            min-width: 250px; /* Minimum width before wrapping */
+            flex: 1 1 0; 
+            min-width: 250px; 
         }
 
-        /* Button styling */
         .btn-login {
             background-color: #ffdce0;
             color: #D4536C;
@@ -97,25 +92,23 @@
             font-size: 1rem;
             transition: background 0.3s ease;
             margin-top: 0.5rem;
-            cursor: pointer; /* Indicate it's clickable */
+            cursor: pointer;
         }
 
         .btn-login:hover {
             background-color: #f8c9cf;
         }
-
-        /* Error message styling */
         .error-message {
             color: #D4536C;
             font-size: 0.88rem;
             text-align: left;
-            margin-top: -0.8rem; /* Pull up closer to the input */
+            margin-top: -0.8rem; 
             margin-bottom: 1rem;
-            display: none; /* Hidden by default */
+            display: none; 
         }
 
         .error-message.show {
-            display: block; /* Show when 'show' class is added */
+            display: block; 
         }
 
         .inline-error {
@@ -126,7 +119,6 @@
             display: inline-block;
         }
 
-        /* Login button for existing users (not used in this form, but kept from original) */
         .login-btn {
             display: inline-block;
             color: #D4536C;
@@ -148,31 +140,27 @@
             text-align: center;
         }
 
-        /* --- Responsive Adjustments --- */
-
-        /* For screens smaller than 768px (common tablet portrait / large phone landscape) */
         @media (max-width: 768px) {
             .form-row {
-                flex-direction: column; /* Stack columns vertically to make it a long form */
-                gap: 1.5rem; /* Reduce gap when stacked */
+                flex-direction: column; 
+                gap: 1.5rem; 
             }
 
             .form-col {
-                min-width: unset; /* Remove min-width constraint when stacked */
-                width: 100%; /* Ensure it takes full width of its parent */
-                flex: none; /* Reset flex properties to avoid unwanted shrinking/growing */
+                min-width: unset;
+                width: 100%; 
+                flex: none;
             }
 
             .login-card {
-                padding: 2rem 1.5rem; /* Adjust padding for smaller screens */
+                padding: 2rem 1.5rem; 
             }
 
-            /* Further refine input padding for better touch targets and less visual bulk */
+        
             .form-control {
                 padding: 0.6rem 0.9rem;
             }
 
-            /* Adjust font sizes for better readability on smaller screens */
             .login-card h3 {
                 font-size: 1.5rem;
             }
@@ -181,15 +169,14 @@
             }
         }
 
-        /* For very small screens (e.g., iPhone SE, older Android phones) */
         @media (max-width: 480px) {
             body {
-                padding: 3vh 0.8rem; /* Reduce overall body padding */
+                padding: 3vh 0.8rem; 
             }
 
             .login-card {
-                padding: 1.5rem 1rem; /* Tighter padding for very narrow screens */
-                border-radius: 15px; /* Slightly less rounded corners for smaller cards */
+                padding: 1.5rem 1rem; 
+                border-radius: 15px; 
             }
 
             .login-card h3 {
@@ -207,7 +194,7 @@
             }
 
             .form-control {
-                padding: 0.5rem 0.8rem; /* Even smaller padding for inputs */
+                padding: 0.5rem 0.8rem;
                 font-size: 0.9rem;
                 margin-bottom: 1rem;
             }
@@ -266,7 +253,6 @@
     </div>
 
     <script>
-        // Client-side validation for password strength and match
         document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
             const passwordInput = document.getElementById('password');
             const confirmPasswordInput = document.getElementById('confirm_password');
@@ -274,10 +260,8 @@
             const confirmError = document.getElementById('confirmError');
 
             let hasError = false;
-            // Regex for strong password: at least 12 characters, with uppercase, lowercase, number & symbol
             const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$/;
 
-            // Validate new password strength
             if (!strongPasswordRegex.test(passwordInput.value)) {
                 passwordError.classList.add('show');
                 hasError = true;
@@ -285,7 +269,6 @@
                 passwordError.classList.remove('show');
             }
 
-            // Validate password confirmation
             if (passwordInput.value !== confirmPasswordInput.value) {
                 confirmError.classList.add('show');
                 hasError = true;
@@ -293,7 +276,6 @@
                 confirmError.classList.remove('show');
             }
 
-            // Prevent form submission if there are validation errors
             if (hasError) {
                 e.preventDefault();
             }
