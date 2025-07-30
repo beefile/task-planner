@@ -698,12 +698,12 @@ h1, h2, h3, h4, h5, h6 {
                             <option value="1">Work</option>
                             <option value="2">Personal</option>
                             <option value="3">Important</option>
-                            <option value="4">Shopping</option>
-                            <option value="5">Health</option>
-                            <option value="6">Finance</option>
-                            <option value="7">Study</option>
-                        <?php endif; ?>
+                            <option value="4">Other</option> <?php endif; ?>
                     </select>
+                </div>
+                <div class="form-group" id="customCategoryNameGroup" style="display: none;">
+                    <label for="custom_category_name">Specify Category Name</label>
+                    <input type="text" id="custom_category_name" name="custom_category_name" placeholder="e.g., Learning a new language">
                 </div>
                 <div class="form-group">
                     <label for="status">Status</label>
@@ -745,6 +745,7 @@ h1, h2, h3, h4, h5, h6 {
                 1 => 'Work',
                 2 => 'Personal',
                 3 => 'Important',
+                4 => 'Other', 
             ];
         }
     ?>
@@ -863,6 +864,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     let currentTaskIdToDelete = null;
 
+
     const phpCategories = <?php echo json_encode(isset($categories) ? $categories : []); ?>;
     const categoryMap = {};
     phpCategories.forEach(cat => {
@@ -874,11 +876,32 @@ document.addEventListener('DOMContentLoaded', function () {
             1: 'Work',
             2: 'Personal',
             3: 'Important',
-            4: 'Shopping',
-            5: 'Health',
-            6: 'Finance',
-            7: 'Study',
+            4: 'Other',
         });
+    }
+
+    const OTHER_CATEGORY_ID = '4';
+
+    const categorySelect = document.getElementById('category_id'); 
+    const customCategoryNameGroup = document.getElementById('customCategoryNameGroup'); 
+    const customCategoryNameInput = document.getElementById('custom_category_name'); 
+
+
+    if (categorySelect && customCategoryNameGroup && customCategoryNameInput) {
+        function toggleCustomCategoryInput() {
+            if (categorySelect.value === OTHER_CATEGORY_ID) {
+                customCategoryNameGroup.style.display = 'block';
+                customCategoryNameInput.setAttribute('required', 'required');
+            } else {
+                customCategoryNameGroup.style.display = 'none';
+                customCategoryNameInput.removeAttribute('required');
+                customCategoryNameInput.value = '';
+            }
+        }
+
+        categorySelect.addEventListener('change', toggleCustomCategoryInput);
+
+        toggleCustomCategoryInput();
     }
 
     showTaskFormBtn.addEventListener('click', function () {
@@ -907,6 +930,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 <button type="button" class="remove-checklist-item" onclick="removeChecklistItem(this)">x</button>
             </div>
         `;
+        if (categorySelect) categorySelect.value = '';
+        if (customCategoryNameGroup) customCategoryNameGroup.style.display = 'none';
+        if (customCategoryNameInput) customCategoryNameInput.value = '';
+        if (customCategoryNameInput) customCategoryNameInput.removeAttribute('required');
     }
 
     window.addChecklistItem = function () {
@@ -930,8 +957,17 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('viewTaskDueDate').textContent = task.due_date || 'N/A';
         document.getElementById('viewTaskDueTime').textContent = task.due_time || 'N/A';
         document.getElementById('viewRepeatType').textContent = task.repeat_type ?? 'None';
-        document.getElementById('viewTaskCategory').textContent = getCategoryName(task.category_id);
-        
+
+        const viewTaskCategorySpan = document.getElementById('viewTaskCategory');
+        let displayCategory = '';
+
+        if (task.category_id == OTHER_CATEGORY_ID && task.custom_category_name) {
+            displayCategory = htmlspecialchars(task.custom_category_name) + ' (Other)';
+        } else {
+            displayCategory = getCategoryName(task.category_id);
+        }
+        viewTaskCategorySpan.textContent = displayCategory;
+
         const viewTaskStatusSpan = document.getElementById('viewTaskStatus');
         viewTaskStatusSpan.textContent = task.status ? capitalizeFirstLetter(task.status) : 'N/A';
         viewTaskStatusSpan.className = 'status-badge ' + (task.status ? task.status.toLowerCase().replace(' ', '-') : '');
@@ -967,50 +1003,73 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => viewTaskModal.classList.add('show'), 10);
     };
 
-window.editTask = function (task) {
-    formTitle.textContent = 'Edit Task';
-    taskForm.action = '<?= base_url('task/save') ?>'; 
-    document.getElementById('taskId').value = task.id;
-    document.getElementById('taskTitle').value = task.title;
-    document.getElementById('taskDate').value = task.due_date;
-    document.getElementById('due_time').value = task.due_time;
-    document.getElementById('category_id').value = task.category_id;
-    document.getElementById('status').value = task.status;
-    document.getElementById('description').value = task.description;
+    window.editTask = function (task) {
+        formTitle.textContent = 'Edit Task';
+        taskForm.action = '<?= base_url('task/save') ?>';
+        document.getElementById('taskId').value = task.id;
+        document.getElementById('taskTitle').value = task.title;
+        document.getElementById('taskDate').value = task.due_date;
+        document.getElementById('due_time').value = task.due_time;
 
-    if (task.repeat_type !== undefined && document.getElementById('repeat')) {
-        document.getElementById('repeat').value = task.repeat_type;
-    }
-
-    const checklistItemsDiv = document.getElementById('checklistItems');
-    checklistItemsDiv.innerHTML = '';
-
-    if (task.checklist_items) {
-        try {
-            const checklist = JSON.parse(task.checklist_items);
-            if (Array.isArray(checklist) && checklist.length > 0) {
-                checklist.forEach(item => {
-                    const newItemDiv = document.createElement('div');
-                    newItemDiv.classList.add('checklist-item');
-                    newItemDiv.innerHTML = `
-                        <input type="text" name="checklist_items[]" placeholder="Checklist item" value="${htmlspecialchars(item.item || '')}">
-                        <button type="button" class="remove-checklist-item" onclick="removeChecklistItem(this)">x</button>
-                    `;
-                    checklistItemsDiv.appendChild(newItemDiv);
-                });
+        const categorySelectElement = document.getElementById('category_id');
+        if (categorySelectElement) {
+            if (task.category_id == OTHER_CATEGORY_ID && task.custom_category_name) {
+                categorySelectElement.value = OTHER_CATEGORY_ID;
+            } else if (categoryMap[task.category_id]) {
+                categorySelectElement.value = task.category_id;
+            } else {
+                categorySelectElement.value = '';
             }
-        } catch (e) {
-            console.error("Error parsing checklist_items for edit:", e);
         }
-    }
 
-    if (checklistItemsDiv.children.length === 0) {
-        addChecklistItem();
-    }
+        if (categorySelect && customCategoryNameGroup && customCategoryNameInput) {
+            toggleCustomCategoryInput();
+        }
 
-    taskFormContainer.style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+        if (task.category_id == OTHER_CATEGORY_ID && task.custom_category_name) {
+            if (customCategoryNameInput) {
+                customCategoryNameInput.value = htmlspecialchars(task.custom_category_name);
+            }
+        } else {
+            if (customCategoryNameInput) customCategoryNameInput.value = '';
+        }
+
+        document.getElementById('status').value = task.status;
+        document.getElementById('description').value = task.description;
+
+        if (task.repeat_type !== undefined && document.getElementById('repeat')) {
+            document.getElementById('repeat').value = task.repeat_type;
+        }
+
+        const checklistItemsDiv = document.getElementById('checklistItems');
+        checklistItemsDiv.innerHTML = '';
+
+        if (task.checklist_items) {
+            try {
+                const checklist = JSON.parse(task.checklist_items);
+                if (Array.isArray(checklist) && checklist.length > 0) {
+                    checklist.forEach(item => {
+                        const newItemDiv = document.createElement('div');
+                        newItemDiv.classList.add('checklist-item');
+                        newItemDiv.innerHTML = `
+                            <input type="text" name="checklist_items[]" placeholder="Checklist item" value="${htmlspecialchars(item.item || '')}">
+                            <button type="button" class="remove-checklist-item" onclick="removeChecklistItem(this)">x</button>
+                        `;
+                        checklistItemsDiv.appendChild(newItemDiv);
+                    });
+                }
+            } catch (e) {
+                console.error("Error parsing checklist_items for edit:", e);
+            }
+        }
+
+        if (checklistItemsDiv.children.length === 0) {
+            addChecklistItem();
+        }
+
+        taskFormContainer.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
 
     window.deleteTask = function (taskId, taskTitle) {
@@ -1053,50 +1112,49 @@ window.editTask = function (task) {
         return String(str).replace(/[&<>"']/g, function (m) { return map[m]; });
     }
 
-document.querySelectorAll('.task-completion-checkbox').forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
-        const taskId = this.dataset.taskId;
-        const newStatus = this.checked ? 'completed' : 'pending';
+    document.querySelectorAll('.task-completion-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const taskId = this.dataset.taskId;
+            const newStatus = this.checked ? 'completed' : 'pending';
 
-        const statusBadge = this.closest('tr').querySelector('.status-badge');
-        if (statusBadge) {
-            statusBadge.textContent = capitalizeFirstLetter(newStatus);
-            statusBadge.className = 'status-badge ' + newStatus.toLowerCase().replace(' ', '-');
-        }
+            const statusBadge = this.closest('tr').querySelector('.status-badge');
+            if (statusBadge) {
+                statusBadge.textContent = capitalizeFirstLetter(newStatus);
+                statusBadge.className = 'status-badge ' + newStatus.toLowerCase().replace(' ', '-');
+            }
 
-        fetch('<?= base_url('task/update_status/') ?>' + taskId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `status=${encodeURIComponent(newStatus)}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                console.error('Failed to update task status:', data.message);
+            fetch('<?= base_url('task/update_status/') ?>' + taskId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `status=${encodeURIComponent(newStatus)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    console.error('Failed to update task status:', data.message);
+                    this.checked = !this.checked;
+                    if (statusBadge) {
+                        const originalStatus = newStatus === 'completed' ? 'pending' : 'completed';
+                        statusBadge.textContent = capitalizeFirstLetter(originalStatus);
+                        statusBadge.className = 'status-badge ' + originalStatus.toLowerCase().replace(' ', '-');
+                    }
+                    alert('Failed to update task status: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending update request:', error);
                 this.checked = !this.checked;
                 if (statusBadge) {
                     const originalStatus = newStatus === 'completed' ? 'pending' : 'completed';
                     statusBadge.textContent = capitalizeFirstLetter(originalStatus);
                     statusBadge.className = 'status-badge ' + originalStatus.toLowerCase().replace(' ', '-');
                 }
-                alert('Failed to update task status: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error sending update request:', error);
-            this.checked = !this.checked;
-            if (statusBadge) {
-                const originalStatus = newStatus === 'completed' ? 'pending' : 'completed';
-                statusBadge.textContent = capitalizeFirstLetter(originalStatus);
-                statusBadge.className = 'status-badge ' + originalStatus.toLowerCase().replace(' ', '-');
-            }
-            alert('Network error while updating task status.');
+                alert('Network error while updating task status.');
+            });
         });
     });
-});
-
 
     const repeatSelect = document.getElementById('repeat');
     const customDaysWrapper = document.getElementById('custom-days-wrapper');
@@ -1112,5 +1170,4 @@ document.querySelectorAll('.task-completion-checkbox').forEach(checkbox => {
     }
 
 });
-
 </script>

@@ -568,7 +568,7 @@
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         font-size: 1rem;
-        border: none;
+        border: 2px solid black;
         transition: background-color 0.2s;
     }
     .btn-calculator:hover {
@@ -576,13 +576,15 @@
         color: #D4536C;
     }
     #calculatorModal .modal-content { 
-        border-radius: 24px; border: none; 
+        border-radius: 24px; 
+        border: 2px solid black; 
     }
     #calculatorModal .modal-header { 
         border-bottom: 1px solid #eee; 
-    }
+    }   
     #calculatorModal .modal-title { 
-        color: #333; font-size: 24px; font-weight: 600; 
+        color: #333; font-size: 24px; 
+        font-weight: 600; 
     }
     #calculatorModal #calc-display {
         width: 100%; height: 80px; 
@@ -822,6 +824,7 @@
                         <option value="important">Important</option>
                         <option value="work">Work</option>
                         <option value="personal">Personal</option>
+                        <option value="personal">Other</option>
                     </select>
                 </div>
                 <div class="form-actions">
@@ -835,7 +838,7 @@
         <div class="col-lg-5">
             <div class="d-grid gap-2 mb-3">
                 <button type="button" class="btn-calculator" data-bs-toggle="modal" data-bs-target="#calculatorModal">
-                    <i class="bi bi-calculator"></i> OPEN CALCULATOR
+                    <i class="bi bi-calculator"></i> CALCULATOR
                 </button>
             </div>
 

@@ -55,8 +55,8 @@ class Planner extends CI_Controller {
     }
 
     public function login_action() {
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
+        $username = $this->input->post('username',true);
+        $password = $this->input->post('password',true);
 
         $user = $this->Planner_model->get_user_by_username($username);
 
@@ -110,7 +110,6 @@ public function signup_action() {
     }
 }
 
-
     public function login() {
         $this->load->view('templates/header');
         $this->load->view('auth/login');
@@ -118,7 +117,7 @@ public function signup_action() {
     }
 
     public function check_email_exists() {
-    $email = $this->input->post('email');
+    $email = $this->input->post('email',true);
     $this->load->model('User_model');
     $exists = $this->User_model->email_exists($email);
 

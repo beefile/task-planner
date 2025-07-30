@@ -11,7 +11,6 @@ class Task_model extends CI_Model {
         return $this->db->update('tasks', $data);
     }
 
-
     public function delete_task($task_id, $user_id) {
         return $this->db
                     ->where('id', $task_id)
@@ -19,7 +18,7 @@ class Task_model extends CI_Model {
                     ->update('tasks', ['is_active' => 0]);
     }
 
-    public function count_active_tasks_by_user($user_id) { 
+    public function count_active_tasks_by_user($user_id) {
         return $this->db
                     ->where('user_id', $user_id)
                     ->where('is_active', 1)
@@ -29,7 +28,7 @@ class Task_model extends CI_Model {
     public function get_paginated_tasks_by_user($user_id, $limit, $start) {
         $this->db->where('user_id', $user_id);
         $this->db->where('is_active', 1);
-        $this->db->order_by('due_date', 'DESC'); 
+        $this->db->order_by('due_date', 'DESC');
         $this->db->limit($limit, $start);
         $query = $this->db->get('tasks');
         return $query->result();
@@ -43,6 +42,14 @@ class Task_model extends CI_Model {
                 ->result();
     }
 
+    public function get_task_by_id_and_user($task_id, $user_id) {
+        $this->db->where('id', $task_id);
+        $this->db->where('user_id', $user_id);
+        $this->db->where('is_active', 1);
+        $query = $this->db->get('tasks');
+        return $query->row();
+    }
+
     public function get_tasks_by_date($user_id, $date) {
     return $this->db
                 ->where('user_id', $user_id)
@@ -50,7 +57,7 @@ class Task_model extends CI_Model {
                 ->where('is_active', 1)
                 ->get('tasks')
                 ->result_array();
-    }   
+    }
 
     public function count_tasks_by_status($user_id, $status) {
     return $this->db
@@ -65,7 +72,7 @@ class Task_model extends CI_Model {
                 ->where('user_id', $user_id)
                 ->where('is_active', 1)
                 ->count_all_results('tasks');
-}
+    }
 
 
     public function get_recent_tasks_by_user($user_id, $limit = 5) {
@@ -77,15 +84,15 @@ class Task_model extends CI_Model {
                     ->get('tasks')
                     ->result();
     }
-    
+
     public function get_categories_by_user($user_id) {
-        return $this->db->get('categories')->result(); 
+        return $this->db->get('categories')->result();
     }
 
     public function get_all_categories() {
+        $this->db->where('user_id IS NULL'); 
+        $this->db->order_by('category', 'ASC');
         $query = $this->db->get('categories');
         return $query->result();
     }
-
-
 }
