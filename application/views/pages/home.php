@@ -748,6 +748,95 @@
     }
     #viewTaskModal .modal-body .status-badge.completed { 
         background-color: #28a745; 
+        }
+
+        #notification-container {
+        position: fixed;
+        top: 20px; 
+        right: 20px; 
+        z-index: 1100; 
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 350px;
+        pointer-events: none;
+    }
+
+    .notification-toast {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid #eee;
+        color: #333;
+        font-size: 0.95em;
+        opacity: 0; 
+        transform: translateX(100%); 
+        animation: slideInFromRight 0.5s forwards, fadeOut 0.5s forwards 4.5s; 
+        pointer-events: auto; 
+        position: relative;
+        overflow: hidden;
+        min-width: 250px; 
+    }
+
+    .notification-toast.slide-out {
+        animation: slideOutToRight 0.5s forwards; 
+    }
+
+    .notification-toast.info { border-left: 5px solid #0d6efd; } 
+    .notification-toast.warning { border-left: 5px solid #ffc107; }
+    .notification-toast.danger { border-left: 5px solid #dc3545; }
+    .notification-toast.success { border-left: 5px solid #28a745; }
+
+    .notification-toast .icon {
+        font-size: 1.5em;
+        flex-shrink: 0;
+    }
+    .notification-toast .content {
+        flex-grow: 1;
+    }
+    .notification-toast .content strong {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 3px;
+        color: #333;
+    }
+    .notification-toast .content p {
+        margin: 0;
+        font-size: 0.9em;
+        color: #555;
+    }
+
+    .notification-toast .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.2em;
+        color: #aaa;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        margin-left: auto;
+        flex-shrink: 0;
+        transition: color 0.2s;
+    }
+    .notification-toast .close-btn:hover {
+        color: #555;
+    }
+
+    @keyframes slideInFromRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutToRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
     }
 </style>
 
@@ -838,7 +927,7 @@
         <div class="col-lg-5">
             <div class="d-grid gap-2 mb-3">
                 <button type="button" class="btn-calculator" data-bs-toggle="modal" data-bs-target="#calculatorModal">
-                    <i class="bi bi-calculator"></i> CALCULATOR
+                    <i class="bi bi-calculator"></i>CALCULATOR
                 </button>
             </div>
 
@@ -942,6 +1031,8 @@
     </div>
 </div>
 
+<div id="notification-container"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -961,16 +1052,127 @@
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
-        const homePageCategoryMap = {
-            1: 'Important',
-            2: 'Work',
-            3: 'Personal',
-        };
 
-        function getHomePageCategoryName(categoryId) {
-            return homePageCategoryMap[categoryId] || 'N/A';
+        const phpCategories = <?php echo json_encode(isset($categories) ? $categories : []); ?>;
+        const categoryMap = {}; 
+        phpCategories.forEach(cat => {
+            categoryMap[cat.id] = cat.category;
+        });
+
+        if (Object.keys(categoryMap).length === 0) {
+            Object.assign(categoryMap, {
+                1: 'Work',
+                2: 'Personal',
+                3: 'Important',
+                4: 'Other', 
+            });
         }
 
+        const OTHER_CATEGORY_ID = '4'; 
+
+        function getCategoryName(categoryId) {
+            return categoryMap[categoryId] || 'Unknown Category';
+        }
+
+        function showNotification(type, title, message, duration = 5000) {
+            const notificationContainer = document.getElementById('notification-container');
+            if (!notificationContainer) {
+                console.warn("Notification container not found. Cannot show notification.");
+                return;
+            }
+
+            const toast = document.createElement('div');
+            toast.classList.add('notification-toast', type);
+
+            let iconClass = '';
+            switch (type) {
+                case 'info':    iconClass = 'bi bi-info-circle-fill'; break;
+                case 'success': iconClass = 'bi bi-check-circle-fill'; break;
+                case 'warning': iconClass = 'bi bi-exclamation-triangle-fill'; break;
+                case 'danger':  iconClass = 'bi bi-exclamation-circle-fill'; break;
+                default:        iconClass = 'bi bi-bell-fill'; break;
+            }
+
+            toast.innerHTML = `
+                <i class="icon ${iconClass}"></i>
+                <div class="content">
+                    <strong>${htmlspecialchars(title)}</strong>
+                    <p>${htmlspecialchars(message)}</p>
+                </div>
+                <button class="close-btn">&times;</button>
+            `;
+
+            toast.querySelector('.close-btn').addEventListener('click', () => {
+                toast.classList.add('slide-out');
+                toast.addEventListener('animationend', () => toast.remove(), { once: true });
+            });
+
+            notificationContainer.appendChild(toast);
+
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.add('slide-out');
+                    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+                }
+            }, duration);
+        }
+
+        const alertTasks = <?php echo json_encode(isset($alert_tasks) ? $alert_tasks : []); ?>;
+
+        if (alertTasks && alertTasks.length > 0) {
+            let overdueCount = 0;
+            let dueSoonCount = 0;
+
+            alertTasks.forEach(task => {
+                const taskDueDate = new Date(task.due_date);
+                const today = new Date();
+                today.setHours(0,0,0,0);
+
+                const diffTime = taskDueDate.getTime() - today.getTime();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                let notificationType = 'info';
+                let notificationTitle = htmlspecialchars(task.title);
+                let notificationMessage = '';
+
+                let categoryNameForDisplay = getCategoryName(task.category_id);
+                if (task.category_id == OTHER_CATEGORY_ID && task.custom_category_name) {
+                    categoryNameForDisplay = htmlspecialchars(task.custom_category_name) + ' (Other)';
+                }
+
+                if (diffDays < 0) {
+                    notificationType = 'danger';
+                    notificationTitle = `Overdue: ${notificationTitle}`;
+                    notificationMessage = `Due ${Math.abs(diffDays)} day${Math.abs(diffDays) !== 1 ? 's' : ''} ago! Category: ${categoryNameForDisplay}`;
+                    overdueCount++;
+                } else if (diffDays === 0) { 
+                    notificationType = 'warning';
+                    notificationTitle = `Due Today: ${notificationTitle}`;
+                    notificationMessage = `Due ${task.due_time ? 'at ' + task.due_time : 'today'}! Category: ${categoryNameForDisplay}`;
+                    dueSoonCount++; 
+                } else if (diffDays > 0 && diffDays <= 3) { 
+                    notificationType = 'info';
+                    notificationTitle = `Due Soon: ${notificationTitle}`;
+                    notificationMessage = `Due in ${diffDays} day${diffDays !== 1 ? 's' : ''}! Category: ${categoryNameForDisplay}`;
+                    dueSoonCount++; 
+                }
+
+                if (diffDays < 0 || (diffDays > 0 && diffDays <= 3)) {
+                    showNotification(notificationType, notificationTitle, notificationMessage, 8000);
+                }
+            });
+
+            if (overdueCount > 0 || dueSoonCount > 0) {
+                let summaryParts = [];
+                if (overdueCount > 0) summaryParts.push(`${overdueCount} task${overoverdueCount !== 1 ? 's' : ''} overdue`);
+                if (dueSoonCount > 0) summaryParts.push(`${dueSoonCount} task${dueSoonCount !== 1 ? 's' : ''} due soon`);
+                
+                showNotification('info', 'Task Reminders', summaryParts.join(' and ') + '. Check your task list!', 10000); 
+            }
+
+        } else {
+            showNotification('success', 'No Alerts!', 'All caught up, no tasks needing immediate attention. Keep up the good work!', 5000);
+        }
 
         window.homeViewTask = function (task) {
         const viewTaskModal = document.getElementById('viewTaskModal');
@@ -979,7 +1181,15 @@
             if (document.getElementById('viewTaskDueDate')) document.getElementById('viewTaskDueDate').textContent = task.due_date || 'N/A';
             if (document.getElementById('viewTaskDueTime')) document.getElementById('viewTaskDueTime').textContent = task.due_time || 'N/A';
             if (document.getElementById('viewRepeatType')) document.getElementById('viewRepeatType').textContent = task.repeat_type ? capitalizeFirstLetter(task.repeat_type) : 'None';
-            if (document.getElementById('viewTaskCategory')) document.getElementById('viewTaskCategory').textContent = getHomePageCategoryName(task.category_id);
+            if (document.getElementById('viewTaskCategory')) {
+                let displayCategory = '';
+                if (task.category_id == OTHER_CATEGORY_ID && task.custom_category_name) {
+                    displayCategory = htmlspecialchars(task.custom_category_name) + ' (Other)';
+                } else {
+                    displayCategory = getCategoryName(task.category_id);
+                }
+                document.getElementById('viewTaskCategory').textContent = displayCategory;
+            }
 
             const viewTaskStatusSpan = document.getElementById('viewTaskStatus');
             if (viewTaskStatusSpan) {
@@ -1044,15 +1254,26 @@
                 dailyTasksList.innerHTML = '<p class="text-center text-muted mt-3">No tasks scheduled for this day.</p>';
                 return;
             }
-            const categoryMap = {
-                1: { label: 'Important', class: 'important' },
-                2: { label: 'Work', class: 'work' },
-                3: { label: 'Personal', class: 'personal' }
-            };
 
             tasks.forEach(task => {
-                const category = categoryMap[task.category_id] || { label: 'N/A', class: 'n-a' };
-                const isCompleted = task.status === 'completed';
+                let category_label_for_display = '';
+                let category_class_for_display = 'n-a';
+
+                if (task.category_id == OTHER_CATEGORY_ID && task.custom_category_name) {
+                    category_label_for_display = htmlspecialchars(task.custom_category_name) + ' (Other)';
+                    category_class_for_display = 'n-a';
+                } else if (categoryMap[task.category_id]) {
+                    category_label_for_display = getCategoryName(task.category_id);
+                    if (task.category_id == 1) category_class_for_display = 'important';
+                    else if (task.category_id == 2) category_class_for_display = 'work';
+                    else if (task.category_id == 3) category_class_for_display = 'personal';
+                    else category_class_for_display = 'n-a';
+                } else {
+                    category_label_for_display = 'Uncategorized';
+                    category_class_for_display = 'n-a';
+                }
+
+                const isCompleted = (task.status === 'completed');
                 const formattedDate = new Date(task.due_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
                 const taskElement = document.createElement('div');
                 taskElement.className = `task-item ${isCompleted ? 'completed' : ''}`;
@@ -1064,7 +1285,7 @@
                         <span class="checkmark"></span>
                     </label>
                     <div class="task-details"> <h6>${htmlspecialchars(task.title)}
-                            <span class="category-tag category-${category.class}">${category.label}</span>
+                            <span class="category-tag category-${category_class_for_display}">${category_label_for_display}</span>
                         </h6>
                         <p>Due: ${formattedDate}</p>
                     </div>`;
@@ -1134,7 +1355,6 @@
         });
 
         renderCalendarDays(currentDate);
-
         fetchTasksForDate(selectedDate.toISOString().split('T')[0]);
 
         dailyTasksList.addEventListener('change', function(event) {
@@ -1164,7 +1384,7 @@
                 })
                 .catch(error => {
                     console.error('Error updating task status:', error);
-                    event.target.checked = !isCompleted; 
+                    event.target.checked = !isCompleted;
                     alert('A network error occurred while updating the task.');
                 });
             }
@@ -1206,7 +1426,7 @@
                     alert('Please enter a task title.');
                     return;
                 }
-                const categoryMap = { 'important': 1, 'work': 2, 'personal': 3 };
+                const categoryMap = { 'important': 1, 'work': 2, 'personal': 3 }; // This is a local categoryMap for new task form
                 const categoryId = categoryMap[categoryValue] ?? null;
                 fetch('<?= base_url('task/save') ?>', {
                     method: 'POST',

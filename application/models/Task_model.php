@@ -95,4 +95,24 @@ class Task_model extends CI_Model {
         $query = $this->db->get('categories');
         return $query->result();
     }
+    public function get_tasks_for_due_date_alert($user_id, $days_until_due = 3) {
+        $today = date('Y-m-d');
+        $due_soon_start_date = date('Y-m-d', strtotime("+1 day"));
+        $due_soon_end_date = date('Y-m-d', strtotime("+$days_until_due days")); 
+
+        $this->db->where('user_id', $user_id);
+        $this->db->where('is_active', 1);
+        $this->db->where('status !=', 'completed');
+
+        $this->db->group_start();
+        $this->db->where('due_date <', $today); 
+
+        $this->db->or_where('due_date BETWEEN "' . $due_soon_start_date . '" AND "' . $due_soon_end_date . '"');
+        $this->db->group_end();
+
+        $this->db->order_by('due_date', 'ASC');
+        $this->db->order_by('due_time', 'ASC');
+        $query = $this->db->get('tasks');
+        return $query->result();
+    }
 }

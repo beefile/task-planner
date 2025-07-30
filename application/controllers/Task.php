@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+date_default_timezone_set('Asia/Manila');
+
 class Task extends CI_Controller {
 
     public function __construct() {
@@ -9,15 +11,17 @@ class Task extends CI_Controller {
         $this->load->library('session');
         $this->load->helper(['url', 'form']);
         $this->load->library('pagination');
+        $this->load->model('Activity_Log_Model');
     }
-/*
+
+    /*
     public function update_task($task_id, $task_data) {
-        $this->db->where('id', $task_id); 
+        $this->db->where('id', $task_id);
         $this->db->update('tasks', $task_data);
     }
-*/
+    */
 
-      public function index() {
+    public function index() {
         if (!$this->session->userdata('user_id')) {
             redirect('login');
         }
@@ -27,7 +31,7 @@ class Task extends CI_Controller {
         $config['base_url'] = base_url('task/index');
         $config['total_rows'] = $this->Task_model->count_active_tasks_by_user($user_id);
         $config['per_page'] = 10;
-        $config['uri_segment'] = 3; 
+        $config['uri_segment'] = 3;
 
         $config['full_tag_open'] = '<div class="pagination-links">';
         $config['full_tag_close'] = '</div>';
@@ -46,10 +50,10 @@ class Task extends CI_Controller {
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 
         $data['tasks'] = $this->Task_model->get_paginated_tasks_by_user($user_id, $config['per_page'], $page);
-        
+
         $data['pagination_links'] = $this->pagination->create_links();
 
-        $categories = $this->Task_model->get_all_categories(); 
+        $categories = $this->Task_model->get_all_categories();
         $data['categories'] = $categories;
 
         $categoryMap = [];
@@ -58,12 +62,16 @@ class Task extends CI_Controller {
         }
         $data['categoryMap'] = $categoryMap;
 
+        if ($user_id) {
+            $this->Activity_Log_Model->log_activity($user_id, 'task_read');
+        }
+
         $this->load->view('templates/header');
         $this->load->view('templates/sidebar', ['active' => 'task']);
         $this->load->view('pages/task', $data);
         $this->load->view('templates/footer');
-    }    
-    
+    }
+
     public function save() {
         if (!$this->session->userdata('user_id')) {
             if ($this->input->is_ajax_request()) {
@@ -88,9 +96,9 @@ class Task extends CI_Controller {
         }
         $checklist_json = !empty($processed_checklist_items) ? json_encode($processed_checklist_items) : null;
 
-        $selected_category_id = $this->input->post('category_id'); 
+        $selected_category_id = $this->input->post('category_id');
         $final_category_id = null;
-        $final_custom_category_name = null; 
+        $final_custom_category_name = null;
 
         $OTHER_CATEGORY_DB_ID = '4';
 
@@ -110,7 +118,7 @@ class Task extends CI_Controller {
             }
         } else {
             $final_category_id = empty($selected_category_id) ? null : (int)$selected_category_id;
-            $final_custom_category_name = null; 
+            $final_custom_category_name = null;
         }
 
         $taskData = [
@@ -119,8 +127,8 @@ class Task extends CI_Controller {
             'due_date'             => $this->input->post('due_date'),
             'due_time'             => $this->input->post('due_time'),
             'description'          => $this->input->post('description'),
-            'category_id'          => $final_category_id,          
-            'custom_category_name' => $final_custom_category_name,    
+            'category_id'          => $final_category_id,
+            'custom_category_name' => $final_custom_category_name,
             'checklist_items'      => $checklist_json,
             'repeat_type'          => $this->input->post('repeat_type') ?? 'none',
             'updated_at'           => date('Y-m-d H:i:s'),
@@ -131,10 +139,10 @@ class Task extends CI_Controller {
             if (is_array($custom_days) && count($custom_days) > 0) {
                 $taskData['repeat_days'] = implode(',', $custom_days);
             } else {
-                $taskData['repeat_days'] = null; 
+                $taskData['repeat_days'] = null;
             }
         } else {
-            $taskData['repeat_days'] = null; 
+            $taskData['repeat_days'] = null;
         }
 
         if (empty($taskData['title'])) {
@@ -155,6 +163,7 @@ class Task extends CI_Controller {
             $updated = $this->Task_model->update_task($task_id, $taskData);
             if ($updated) {
                 $response = ['status' => 'success', 'message' => 'Task updated successfully.', 'task_id' => $task_id];
+                $this->Activity_Log_Model->log_activity($user_id, 'task_updated');
             } else {
                 $response = ['status' => 'error', 'message' => 'Failed to update task.'];
             }
@@ -165,6 +174,7 @@ class Task extends CI_Controller {
             $new_task_id = $this->Task_model->insert_task($taskData);
             if ($new_task_id) {
                 $response = ['status' => 'success', 'message' => 'Task added successfully.', 'task_id' => $new_task_id];
+                $this->Activity_Log_Model->log_activity($user_id, 'task_created');
             } else {
                 $response = ['status' => 'error', 'message' => 'Failed to add task.'];
             }
@@ -179,20 +189,21 @@ class Task extends CI_Controller {
         }
     }
 
-        public function delete($id) {
+    public function delete($id) {
         if (!$this->session->userdata('user_id')) {
             redirect('login');
         }
 
         $user_id = $this->session->userdata('user_id');
-        $this->Task_model->delete_task($id, $user_id); 
+
         if ($this->Task_model->delete_task($id, $user_id)) {
-            $this->session->set_flashdata('success', 'Task deleted successfully.'); 
-            } else {
-                $this->session->set_flashdata('error', 'Failed to delete task or task not found.'); 
-            }
-                    redirect('task');
+            $this->session->set_flashdata('success', 'Task deleted successfully.');
+            $this->Activity_Log_Model->log_activity($user_id, 'task_deleted');
+        } else {
+            $this->session->set_flashdata('error', 'Failed to delete task or task not found.');
         }
+        redirect('task');
+    }
 
     public function update_status($task_id) {
         if (!$this->input->is_ajax_request()) {
@@ -215,7 +226,7 @@ class Task extends CI_Controller {
             return;
         }
 
-        $task = $this->Task_model->get_task_by_id_and_user($task_id, $user_id); 
+        $task = $this->Task_model->get_task_by_id_and_user($task_id, $user_id);
 
         if (!$task) {
             echo json_encode(['success' => false, 'message' => 'Task not found or not authorized.']);
@@ -228,17 +239,17 @@ class Task extends CI_Controller {
             try {
                 $checklist = json_decode($task->checklist_items, true);
                 if (is_array($checklist)) {
-                    foreach ($checklist as &$item) { 
+                    foreach ($checklist as &$item) {
                         $item['completed'] = ($status === 'completed');
                     }
-                    $update_data['checklist_items'] = json_encode($checklist); 
+                    $update_data['checklist_items'] = json_encode($checklist);
                 }
             } catch (Exception $e) {
                 log_message('error', 'Error processing checklist for status update for task ' . $task_id . ': ' . $e->getMessage());
             }
         }
 
-        $updated = $this->Task_model->update_task($task_id, $update_data); 
+        $updated = $this->Task_model->update_task($task_id, $update_data);
 
         if ($updated) {
             echo json_encode(['success' => true, 'message' => 'Task status and checklist (if any) updated.']);
