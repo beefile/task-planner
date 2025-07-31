@@ -3,13 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 date_default_timezone_set('Asia/Manila'); 
 
-class Planner extends CI_Controller {
+class Planner extends My_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('Planner_model');
         $this->load->model('User_model');
         $this->load->model('Task_model');
         $this->load->library('session');
+        $this->load->library('set_views');
         $this->load->helper(['url', 'form']);
         $this->load->model('Activity_Log_Model');
     }
@@ -70,10 +71,11 @@ class Planner extends CI_Controller {
             $this->Activity_Log_Model->log_activity($user_id, 'task_read');
         }
 
-        $this->load->view('templates/header');
-        $this->load->view('templates/sidebar', ['active' => $page]);
-        $this->load->view('pages/' . $page, $data);
-        $this->load->view('templates/footer');
+        $this->render('pages/' . $page, $data, $page);
+        // $this->load->view('templates/header');
+        // $this->load->view('templates/sidebar', ['active' => $page]);
+        // $this->load->view('pages/' . $page, $data);
+        // $this->load->view('templates/footer');
     }
 
     public function login_action() {
@@ -105,9 +107,8 @@ class Planner extends CI_Controller {
     }
 
     public function signup() {
-        $this->load->view('templates/header');
-        $this->load->view('auth/signup');
-        $this->load->view('templates/footer');
+        $data = [];
+        $this->renderwithoutsidebar($this->set_views->signup(), $data);
     }
     public function signup_action() {
         $first_name = $this->input->post('first_name', true);
@@ -143,9 +144,8 @@ class Planner extends CI_Controller {
     }
 
     public function login() {
-        $this->load->view('templates/header');
-        $this->load->view('auth/login');
-        $this->load->view('templates/footer');
+        $data = [];
+        $this->renderwithoutsidebar($this->set_views->login(), $data);
     }
 
     public function check_email_exists() {

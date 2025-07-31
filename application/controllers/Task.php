@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 date_default_timezone_set('Asia/Manila');
 
-class Task extends CI_Controller {
+class Task extends My_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -12,6 +12,7 @@ class Task extends CI_Controller {
         $this->load->helper(['url', 'form']);
         $this->load->library('pagination');
         $this->load->model('Activity_Log_Model');
+        $this->load->library('set_views');
     }
 
     /*
@@ -66,10 +67,7 @@ class Task extends CI_Controller {
             $this->Activity_Log_Model->log_activity($user_id, 'task_read');
         }
 
-        $this->load->view('templates/header');
-        $this->load->view('templates/sidebar', ['active' => 'task']);
-        $this->load->view('pages/task', $data);
-        $this->load->view('templates/footer');
+        $this->render($this->set_views->task(), $data, 'task');
     }
 
     public function save() {
@@ -166,7 +164,7 @@ class Task extends CI_Controller {
                 $this->Activity_Log_Model->log_activity($user_id, 'task_updated');
             } else {
                 $response = ['status' => 'error', 'message' => 'Failed to update task.'];
-            }
+            }   
         } else {
             $taskData['status'] = 'pending';
             $taskData['created_at'] = date('Y-m-d H:i:s');
